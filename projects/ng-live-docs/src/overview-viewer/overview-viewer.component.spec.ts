@@ -5,4 +5,4 @@
 
 import {OverviewViewerComponent} from './overview-viewer.component';
 
-describe("OverviewViewerComponent", () => {});
+describe('OverviewViewerComponent', () => {});

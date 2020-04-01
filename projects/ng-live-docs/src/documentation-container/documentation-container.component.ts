@@ -8,7 +8,7 @@ import {ActivatedRoute, Data} from '@angular/router';
 import {DocumentationEntry} from '../documentation';
 
 @Component({
-    selector: 'vcd-documentation-container',
+    selector: 'vmw-documentation-container',
     templateUrl: './documentation-container.component.html',
     styleUrls: ['./documentation-container.component.scss'],
 })

@@ -5,5 +5,5 @@
 
 import {CompoDocRetrieverService} from './compodoc-retriever.service';
 
-describe("CompoDocRetrieverService", () => {
+describe('CompoDocRetrieverService', () => {
 });

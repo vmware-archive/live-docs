@@ -4,17 +4,17 @@
  */
 
 import { Component, ElementRef, Input, OnDestroy, Type } from '@angular/core';
+import { TabbedCodeViewer } from '@vmw/plain-js-live-docs';
 import Prism from 'prismjs';
 import 'prismjs/components/prism-scss';
 import 'prismjs/components/prism-typescript';
 import { DocumentationRetrieverService } from '../documentation-retriever.service';
-import { TabbedCodeViewer } from '@vmw/plain-js-live-docs';
 
 /**
  * To display the 3 code parts(TypeScript, HTML and CSS) of a component
  */
 @Component({
-    selector: 'vcd-source-code-viewer',
+    selector: 'vmw-source-code-viewer',
     template: '',
 })
 export class SourceCodeViewerComponent implements OnDestroy {

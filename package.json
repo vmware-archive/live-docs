@@ -12,6 +12,7 @@
     "test:ci:ng-live-docs": "ng test ng-live-docs --watch=false --browsers ChromeHeadlessNoSandbox --code-coverage",
     "test:components": "ng test components",
     "lint": "ng lint",
+    "lint-fix": "tslint --fix -p tsconfig.json",
     "e2e": "ng e2e"
   },
   "private": true,
@@ -33,7 +34,8 @@
     "prismjs": "^1.17.1",
     "rxjs": "6.4.0",
     "tslib": "1.10.0",
-    "zone.js": "0.9.1"
+    "zone.js": "0.9.1",
+    "@webcomponents/custom-elements": "1.0.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.803.25",
@@ -57,7 +59,15 @@
     "ts-node": "7.0.0",
     "tsickle": "^0.37.0",
     "tslint": "5.15.0",
-    "typescript": "3.5.3",
-    "karma-coverage-istanbul-reporter": "2.1.1"
+    "typescript": "^3.5.3",
+    "karma-coverage-istanbul-reporter": "2.1.1",
+    "prettier": "1.18.2",
+    "pretty-quick": "2.0.0",
+    "tslint-microsoft-contrib": "6.2.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged; npm run lint-fix"
+    }
   }
 }

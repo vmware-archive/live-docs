@@ -7,7 +7,7 @@ import {Component, Input, Type} from '@angular/core';
 import {ApiParameters, DocumentationRetrieverService} from '../documentation-retriever.service';
 
 @Component({
-    selector: ' vcd-api-viewer',
+    selector: ' vmw-api-viewer',
     templateUrl: './api-viewer.component.html',
     styleUrls: ['./api-viewer.component.scss'],
 })

@@ -9,7 +9,7 @@ import {DocumentationRetrieverService} from '../documentation-retriever.service'
 import {StackBlitzWriterService} from '../stack-blitz-writer.service';
 
 @Component({
-    selector: 'vcd-example-viewer',
+    selector: 'vmw-example-viewer',
     templateUrl: './example-viewer.component.html',
     styleUrls: ['./example-viewer.component.scss'],
 })

@@ -7,7 +7,7 @@ import {Component, Input, Type} from '@angular/core';
 import {DocumentationRetrieverService} from '../documentation-retriever.service';
 
 @Component({
-    selector: 'vcd-overview-viewer',
+    selector: 'vmw-overview-viewer',
     templateUrl: './overview-viewer.component.html',
     styleUrls: ['./overview-viewer.component.scss'],
 })
