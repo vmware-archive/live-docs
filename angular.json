@@ -72,6 +72,133 @@
           }
         }
       }
+    },
+    "example-ng-app": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/example-ng-app",
+      "sourceRoot": "projects/example-ng-app/src",
+      "prefix": "vmw",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/example-ng-app",
+            "index": "projects/example-ng-app/src/index.html",
+            "main": "projects/example-ng-app/src/main.ts",
+            "polyfills": "projects/example-ng-app/src/polyfills.ts",
+            "tsConfig": "projects/example-ng-app/tsconfig.app.json",
+            "aot": false,
+            "assets": [
+              "projects/example-ng-app/src/favicon.ico",
+              "projects/example-ng-app/src/assets"
+            ],
+            "styles": [
+              "node_modules/@clr/icons/clr-icons.min.css",
+              "node_modules/@clr/ui/clr-ui.min.css",
+              "projects/example-ng-app/src/styles.scss"
+            ],
+            "scripts": [
+              "node_modules/@webcomponents/custom-elements/custom-elements.min.js",
+              "node_modules/@clr/icons/clr-icons.min.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/example-ng-app/src/environments/environment.ts",
+                  "with": "projects/example-ng-app/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "example-ng-app:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "example-ng-app:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "example-ng-app:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/example-ng-app/src/test.ts",
+            "polyfills": "projects/example-ng-app/src/polyfills.ts",
+            "tsConfig": "projects/example-ng-app/tsconfig.spec.json",
+            "karmaConfig": "projects/example-ng-app/karma.conf.js",
+            "assets": [
+              "projects/example-ng-app/src/favicon.ico",
+              "projects/example-ng-app/src/assets"
+            ],
+            "styles": [
+              "projects/example-ng-app/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/example-ng-app/tsconfig.app.json",
+              "projects/example-ng-app/tsconfig.spec.json",
+              "projects/example-ng-app/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/example-ng-app/e2e/protractor.conf.js",
+            "devServerTarget": "example-ng-app:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "example-ng-app:serve:production"
+            }
+          }
+        }
+      }
     }},
-  "defaultProject": "ng-live-docs"
+  "defaultProject": "example-ng-app"
 }

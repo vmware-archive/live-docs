@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../out-tsc/app",
+    "types": []
+  },
+  // TODO: Removed the 'files' property because Compodoc does not generate documentation.json with it
+  //   https://github.com/compodoc/compodoc/issues/831
+  "include": [
+    "src/**/*.ts",
+    "src/main.ts",
+    "src/polyfills.ts"
+  ],
+  "exclude": [
+    "src/test.ts",
+    "src/**/*.spec.ts"
+  ]
+}

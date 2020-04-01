@@ -1,0 +1,8 @@
+<button (click)="this.changeButtonLocation()" class="btn btn-primary">Change Link Location</button><br />
+<vcd-datagrid
+        [gridData]="gridData"
+        (gridRefresh)="refresh($event)"
+        [columns]="columns"
+        [buttonConfig]="buttonConfig"
+        [selectionType]="selectionType"
+></vcd-datagrid>

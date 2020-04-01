@@ -6,14 +6,15 @@
     "start": "ng serve",
     "build": "ng build",
     "build:plainjs": "ng build plain-js-live-docs",
-    "build:ng-live-docs": "ng build ng-live-docs",
+    "build:ng-live-docs": "ng build ng-live-docs; tsc -p projects/ng-live-docs/scripts/tsconfig.json",
     "test": "ng test",
     "test:ci:plainjs": "ng test plain-js-live-docs --watch=false --browsers ChromeHeadlessNoSandbox --code-coverage",
     "test:ci:ng-live-docs": "ng test ng-live-docs --watch=false --browsers ChromeHeadlessNoSandbox --code-coverage",
     "test:components": "ng test components",
     "lint": "ng lint",
     "lint-fix": "tslint --fix -p tsconfig.json",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "build-examples-doc": "mkdir -p projects/example-ng-app/gen; node $NODE_DEBUG_OPTION dist/ng-live-docs/index.js projects/example-ng-app/tsconfig.app.json projects/example-ng-app/src/main.ts projects/example-ng-app/gen/example-ng-app-doc.json"
   },
   "private": true,
   "dependencies": {
@@ -35,7 +36,9 @@
     "rxjs": "6.4.0",
     "tslib": "1.10.0",
     "zone.js": "0.9.1",
-    "@webcomponents/custom-elements": "1.0.0"
+    "@webcomponents/custom-elements": "1.0.0",
+    "@vcd/ui-components": "0.0.5",
+    "@vcd/i18n": "0.0.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "0.803.25",

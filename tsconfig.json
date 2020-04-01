@@ -19,6 +19,9 @@
     "paths": {
       "@vmw/plain-js-live-docs": [
         "dist/plain-js-live-docs"
+      ],
+      "@vmw/ng-live-docs": [
+        "dist/ng-live-docs"
       ]
     },
     "resolveJsonModule": true,
