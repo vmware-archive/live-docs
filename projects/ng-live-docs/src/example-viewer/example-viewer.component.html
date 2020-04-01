@@ -24,14 +24,14 @@
     </div>
 
     <div class="card-block source-code-container" *ngIf="showSourceCode">
-        <vcd-source-code-viewer [component]="exampleEntry?.component"> </vcd-source-code-viewer>
+        <vmw-source-code-viewer [component]="exampleEntry?.component"> </vmw-source-code-viewer>
     </div>
     <div class="card-block">
         <div class="card-text">
-            <vcd-overview-viewer
+            <vmw-overview-viewer
                 [isNoOverviewMessageShown]="false"
                 [component]="exampleEntry?.component"
-            ></vcd-overview-viewer>
+            ></vmw-overview-viewer>
             <template #exampleContainer> </template>
         </div>
     </div>
