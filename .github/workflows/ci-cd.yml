@@ -229,41 +229,41 @@ jobs:
           env:
             NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
-      publish-ng-live-docs-next:
-        needs: [build-ng-live-docs]
-        runs-on: ubuntu-latest
-        steps:
-          - uses: actions/checkout@v2
-            # Fetch depth is given as input because by default, it does a shallow clone (one without any history) for performance reasons.
-            # But the check-<lib-name>-package step below uses git diff-tree command to get list of files changed and
-            # it requires a base commit sha in addition to the commit sha that triggered this job.
-            with:
-              fetch-depth: 2
-          - uses: actions/setup-node@v1
-            with:
-              node-version: '13'
-              registry-url: https://registry.npmjs.org/
-          - uses: actions/cache@v1
-            with:
-              path: ./node_modules
-              key: ${{github.sha}}-node_modules
-          - uses: actions/cache@v1
-            with:
-              path: ./dist/ng-live-docs
-              key: ${{github.sha}}-ng-live-docs
-          - id: check-ng-live-docs-tag
-            uses: ./.github/actions/check-lib-tag
-            with:
-              lib-name: 'ng-live-docs'
-          - id: check-ng-live-docs-package
-            uses: ./.github/actions/check-lib-package
-            with:
-              lib-name: 'ng-live-docs'
-          - name: Publish ng-live-docs@next
-            if: steps.check-ng-live-docs-tag.outputs.isLibTag != 'true' && steps.check-ng-live-docs-package.outputs.isLibPackageChanged == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/master'
-            run: |
-              cd ./dist/ng-live-docs
-              npm publish --tag next --access public
-            env:
-              NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+    publish-ng-live-docs-next:
+      needs: [build-ng-live-docs]
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+          # Fetch depth is given as input because by default, it does a shallow clone (one without any history) for performance reasons.
+          # But the check-<lib-name>-package step below uses git diff-tree command to get list of files changed and
+          # it requires a base commit sha in addition to the commit sha that triggered this job.
+          with:
+            fetch-depth: 2
+        - uses: actions/setup-node@v1
+          with:
+            node-version: '13'
+            registry-url: https://registry.npmjs.org/
+        - uses: actions/cache@v1
+          with:
+            path: ./node_modules
+            key: ${{github.sha}}-node_modules
+        - uses: actions/cache@v1
+          with:
+            path: ./dist/ng-live-docs
+            key: ${{github.sha}}-ng-live-docs
+        - id: check-ng-live-docs-tag
+          uses: ./.github/actions/check-lib-tag
+          with:
+            lib-name: 'ng-live-docs'
+        - id: check-ng-live-docs-package
+          uses: ./.github/actions/check-lib-package
+          with:
+            lib-name: 'ng-live-docs'
+        - name: Publish ng-live-docs@next
+          if: steps.check-ng-live-docs-tag.outputs.isLibTag != 'true' && steps.check-ng-live-docs-package.outputs.isLibPackageChanged == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/master'
+          run: |
+            cd ./dist/ng-live-docs
+            npm publish --tag next --access public
+          env:
+            NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 

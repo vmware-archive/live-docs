@@ -3,9 +3,7 @@
   "version": "0.0.0",
   "peerDependencies": {
     "@clr/ui": "2.2.1",
-    "@clr/icons": "2.2.1"
-  },
-  "dependencies": {
+    "@clr/icons": "2.2.1",
     "lit-html": "1.1.2",
     "prismjs": "1.17.1"
   }
