@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "npm run build:plainjs; npm run build:ng-live-docs; npm run build-live-docs-doc; npm run build-examples-doc; ng serve",
     "build": "ng build",
+    "build:example-ng-app": "ng build example-ng-app",
     "build:plainjs": "ng build plain-js-live-docs",
     "build:ng-live-docs": "ng build ng-live-docs; tsc -p projects/ng-live-docs/scripts/tsconfig.json",
     "test": "ng test",
@@ -38,8 +39,7 @@
     "tslib": "1.10.0",
     "zone.js": "0.9.1",
     "@webcomponents/custom-elements": "1.0.0",
-    "@vcd/ui-components": "0.0.5",
-    "@vcd/i18n": "0.0.2"
+    "angular-cli-ghpages": "0.6.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "0.803.25",

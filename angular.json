@@ -197,6 +197,16 @@
               "devServerTarget": "example-ng-app:serve:production"
             }
           }
+        },
+        "deploy": {
+          "builder": "angular-cli-ghpages:deploy",
+          "options": {
+            "repo": "https://github.com/vmware/live-docs",
+            "baseHref": "/live-docs/",
+            "noSilent": true,
+            "name": "ps37",
+            "email": "prudhvi.af121@gmail.com"
+          }
         }
       }
     }},
