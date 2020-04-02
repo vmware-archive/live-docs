@@ -4,3 +4,4 @@
  */
 
 export * from './api-viewer.component';
+export * from './api-viewer.module';

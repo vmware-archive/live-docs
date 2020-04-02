@@ -14,6 +14,7 @@
     "lint": "ng lint",
     "lint-fix": "tslint --fix -p tsconfig.json",
     "e2e": "ng e2e",
+    "build-live-docs-doc": "mkdir -p projects/example-ng-app/gen; node $NODE_DEBUG_OPTION dist/ng-live-docs/index.js projects/ng-live-docs/tsconfig.lib.json projects/ng-live-docs/src/public-api.ts projects/example-ng-app/gen/live-docs-doc.json",
     "build-examples-doc": "mkdir -p projects/example-ng-app/gen; node $NODE_DEBUG_OPTION dist/ng-live-docs/index.js projects/example-ng-app/tsconfig.app.json projects/example-ng-app/src/main.ts projects/example-ng-app/gen/example-ng-app-doc.json"
   },
   "private": true,

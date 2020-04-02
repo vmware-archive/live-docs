@@ -1,32 +1,14 @@
 <clr-main-container>
   <clr-header class="header-6">
     <div class="branding">
-      <a routerLink="/" class="nav-nlink">
+      <span>
         <clr-icon shape="vm-bug"></clr-icon>
         <span class="title">Live Docs</span>
-      </a>
+      </span>
     </div>
   </clr-header>
 
   <div class="content-container">
-    <nav class="sidenav" [clr-nav-level]="2">
-      <section class="sidenav-content">
-        <section class="nav-group">
-          <label>Components</label>
-          <ul class="nav-list">
-            <li *ngFor="let entry of sideNavEntries">
-              <a class="nav-link" [routerLink]="entry.path" [routerLinkActive]="['active']">
-                {{ entry.title }}
-              </a>
-            </li>
-          </ul>
-        </section>
-      </section>
-    </nav>
-
-    <main class="content-area">
-<!--      <ng-template vcdTabset="[]"></ng-template>-->
-      <router-outlet></router-outlet>
-    </main>
+    <vmw-example-viewer [exampleEntry]="componentDescriptor"></vmw-example-viewer>
   </div>
 </clr-main-container>
