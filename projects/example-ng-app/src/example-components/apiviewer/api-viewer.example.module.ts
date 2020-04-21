@@ -5,8 +5,8 @@
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { ApiViewerExampleComponent } from "./api-viewer.example.component";
-import { ApiViewerModule } from "@vmw/ng-live-docs";
+import { ApiViewerModule } from '@vmw/ng-live-docs';
+import { ApiViewerExampleComponent } from './api-viewer.example.component';
 
 @NgModule({
   declarations: [ApiViewerExampleComponent],

@@ -1,18 +1,23 @@
-import { BrowserModule } from '@angular/platform-browser';
+/*!
+ * Copyright 2020 VMware, Inc.
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
+
 import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 import {
   CompodocSchema,
   NgLiveDocsModule,
   StackBlitzInfo
-} from "@vmw/ng-live-docs";
+} from '@vmw/ng-live-docs';
 
+import { ClarityModule } from '@clr/angular';
 import { AppComponent } from './app.component';
-import { ClarityModule } from "@clr/angular";
 
-import liveDocsDocumentationJson from '../../gen/live-docs-doc.json';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import exampleDocumentationJson from '../../gen/example-ng-app-doc.json';
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { ApiViewerExampleModule } from "../example-components/apiviewer/api-viewer.example.module";
+import liveDocsDocumentationJson from '../../gen/live-docs-doc.json';
+import { ApiViewerExampleModule } from '../example-components/apiviewer/api-viewer.example.module';
 
 export const docJson1: CompodocSchema = liveDocsDocumentationJson;
 export const docJson2: CompodocSchema = exampleDocumentationJson;

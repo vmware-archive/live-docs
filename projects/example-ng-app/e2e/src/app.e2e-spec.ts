@@ -1,5 +1,10 @@
-import { AppPage } from './app.po';
+/*!
+ * Copyright 2020 VMware, Inc.
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
+
 import { browser, logging } from 'protractor';
+import { AppPage } from './app.po';
 
 describe('workspace-project App', () => {
   let page: AppPage;

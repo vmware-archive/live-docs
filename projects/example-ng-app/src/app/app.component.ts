@@ -1,11 +1,11 @@
 /*!
- * Copyright 2019 VMware, Inc.
+ * Copyright 2020 VMware, Inc.
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-import { Component } from "@angular/core";
-import { ApiViewerComponent, ExampleEntry } from "@vmw/ng-live-docs";
-import { ApiViewerExampleComponent } from "../example-components/apiviewer/api-viewer.example.component";
+import { Component } from '@angular/core';
+import { ApiViewerComponent, ExampleEntry } from '@vmw/ng-live-docs';
+import { ApiViewerExampleComponent } from '../example-components/apiviewer/api-viewer.example.component';
 
 @Component({
   selector: 'vmw-examples-app',
