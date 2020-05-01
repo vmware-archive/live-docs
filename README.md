@@ -37,9 +37,9 @@ a theme to be used.
 
 # How to use it
 
-## Run Script
+## Run script to generate documentation data
 
-The script is run on both projects: the component's library project and the matching examples application. They will
+The script is run on both projects: the component's library project and its matching examples application. They will
 output two JSON files that must be provided in app.module.ts
 
 ### Example

@@ -1,9 +1,9 @@
-VMware Cloud Director UI Common Components
-Copyright (c) 2019 VMware, Inc.  All rights reserved				
+Live Docs
+Copyright (c) 2020 VMware, Inc.  All rights reserved
 
-The BSD-2 license (the "License") set forth below applies to all parts of the VMware Cloud Director UI Common Components project.  You may not use this file except in compliance with the License.
+The BSD-2 license (the "License") set forth below applies to all parts of the Live Docs project.  You may not use this file except in compliance with the License.
 
-BSD-2 License 
+BSD-2 License
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
