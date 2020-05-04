@@ -1,14 +1,13 @@
 # Live Docs
 
-Enables Angular based UI component libraries to embed editable code snippets win their showcase style application
+Enables Angular based UI component libraries to embed editable code snippets win their showcase style application.
+
+See https://vmware.github.io/vmware-cloud-director-ui-components/dataExporter
 
 ## Background
-
-
 By running a script to scour through your projects containining your UI components and their respective examples,
 UI comoponent libraries will be able to showcase their examples with the added benefit of a play button that opens
 the example in a stackblitz editor.
-
 
 # Features
 
@@ -53,7 +52,7 @@ template, adding boiler plate HTML for your editable examples and any package.js
 
 ## Provide generated data in app.module
 
-The library needs to know the module for your example component. A strategy should be implemented in
+The library needs to know the module for your example component. A strategy should be implemented in app.module.ts
 ```
 export const sbInfo: StackBlitzInfo = {
   templateId: 'vcd-ui-cc-starter-clarity-v8-yhe4yg',
@@ -75,7 +74,7 @@ imports: [
 ]
 ```
 
-## Replace Example Components with <vmw-example-viewer>
+## Replace Example Components with `<vmw-example-viewer>`
 Wherever you were loading
 ```
 <app-example-component></app-example-component>
