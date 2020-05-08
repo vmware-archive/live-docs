@@ -8,23 +8,9 @@ on:
         types: [opened, reopened, synchronize]
 
 jobs:
-    prepare_node_modules:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
-            - uses: actions/setup-node@v1
-              with:
-                  node-version: '13'
-            - uses: actions/cache@v1
-              with:
-                  path: ./node_modules
-                  key: ${{github.sha}}-node_modules
-            - run: npm ci
-
     lint-projects:
         runs-on: ubuntu-latest
         name: Linting
-        needs: [prepare_node_modules]
         steps:
             - uses: actions/checkout@v2
             - uses: actions/cache@v1
@@ -32,8 +18,8 @@ jobs:
                   path: ./node_modules
                   key: ${{github.sha}}-node_modules
             - run: |
+                  npm ci
                   npm run lint
-
 
     build-plain-js-live-docs:
         runs-on: ubuntu-latest
@@ -43,29 +29,25 @@ jobs:
             - uses: actions/checkout@v2
             - uses: actions/cache@v1
               with:
-                  path: ./node_modules
-                  key: ${{github.sha}}-node_modules
-            - uses: actions/cache@v1
-              with:
                   path: ./dist/plain-js-live-docs
                   key: ${{github.sha}}-plain-js-live-docs
-            - run: npm run build:plainjs
+            - run: |
+                  npm ci
+                  npm run build:plainjs
 
     build-ng-live-docs:
-      runs-on: ubuntu-latest
-      name: Build /ng-live-docs
-      needs: [lint-projects, build-plain-js-live-docs]
-      steps:
-        - uses: actions/checkout@v2
-        - uses: actions/cache@v1
-          with:
-            path: ./node_modules
-            key: ${{github.sha}}-node_modules
-        - uses: actions/cache@v1
-          with:
-            path: ./dist/ng-live-docs
-            key: ${{github.sha}}-ng-live-docs
-        - run: npm run build:ng-live-docs
+        runs-on: ubuntu-latest
+        name: Build /ng-live-docs
+        needs: [lint-projects, build-plain-js-live-docs]
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/cache@v1
+              with:
+                path: ./dist/ng-live-docs
+                key: ${{github.sha}}-ng-live-docs
+            - run: |
+                  npm ci
+                  npm run build:ng-live-docs
 
     build-example-ng-app:
         runs-on: ubuntu-latest
@@ -75,10 +57,6 @@ jobs:
             - uses: actions/checkout@v2
             - uses: actions/cache@v1
               with:
-                  path: ./node_modules
-                  key: ${{github.sha}}-node_modules
-            - uses: actions/cache@v1
-              with:
                   path: ./dist/ng-live-docs
                   key: ${{ github.sha }}-ng-live-docs
             - uses: actions/cache@v1
@@ -86,32 +64,28 @@ jobs:
                   path: ./dist/examples
                   key: ${{github.sha}}-example-ng-app
             - run: |
+                  npm ci
                   npm run build-live-docs-doc
                   npm run build-examples-doc
                   npm run build:example-ng-app
 
-
-
     unit-testing:
-      runs-on: ubuntu-latest
-      name: Unit tests
-      needs: [build-ng-live-docs]
-      steps:
-        - uses: actions/checkout@v2
-        - uses: actions/cache@v1
-          with:
-            path: ./node_modules
-            key: ${{github.sha}}-node_modules
-        - uses: actions/cache@v1
-          with:
-            path: ./coverage
-            key: coverage
-        - name: Run unit-tests
-          run: |
-            npm run test:ci:ng-live-docs
-        - name: Upload coverage to Codecov
-          if: success()
-          uses: codecov/codecov-action@v1
+        runs-on: ubuntu-latest
+        name: Unit tests
+        needs: [build-ng-live-docs]
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/cache@v1
+              with:
+                  path: ./coverage
+                  key: coverage
+            - name: Run unit-tests
+              run: |
+                  npm ci
+                  npm run test:ci:ng-live-docs
+            - name: Upload coverage to Codecov
+              if: success()
+              uses: codecov/codecov-action@v1
 
     gh-pages-deploy:
         runs-on: ubuntu-latest
@@ -121,47 +95,16 @@ jobs:
             - uses: actions/checkout@v2
             - uses: actions/cache@v1
               with:
-                  path: ./node_modules
-                  key: ${{github.sha}}-node_modules
-            - uses: actions/cache@v1
-              with:
                   path: ./dist/example-ng-app
                   key: ${{github.sha}}-example-ng-app
-            - run: npx ng deploy --no-build
+            - run: |
+                  npm ci
+                  npx ng deploy --no-build
               if: github.event_name == 'push' && github.ref == 'refs/heads/master'
               env:
                   GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-    publish-plain-js-live-docs-latest:
-        needs: [build-plain-js-live-docs]
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
-            - uses: actions/setup-node@v1
-              with:
-                  node-version: '13'
-                  registry-url: https://registry.npmjs.org/
-            - uses: actions/cache@v1
-              with:
-                  path: ./node_modules
-                  key: ${{github.sha}}-node_modules
-            - uses: actions/cache@v1
-              with:
-                  path: ./dist/plain-js-live-docs
-                  key: ${{github.sha}}-plain-js-live-docs
-            - id: check-plain-js-live-docs-tag
-              uses: ./.github/actions/check-lib-tag
-              with:
-                  lib-name: 'plain-js-live-docs'
-            - name: Publish plain-js-live-docs@latest
-              if: steps.check-plain-js-live-docs-tag.outputs.isLibTag == 'true'
-              run: |
-                  cd ./dist/plain-js-live-docs
-                  npm publish
-              env:
-                  NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-
-    publish-plain-js-live-docs-next:
+    publish-plain-js-live-docs:
         needs: [build-plain-js-live-docs]
         runs-on: ubuntu-latest
         steps:
@@ -177,10 +120,6 @@ jobs:
                   registry-url: https://registry.npmjs.org/
             - uses: actions/cache@v1
               with:
-                  path: ./node_modules
-                  key: ${{github.sha}}-node_modules
-            - uses: actions/cache@v1
-              with:
                   path: ./dist/plain-js-live-docs
                   key: ${{github.sha}}-plain-js-live-docs
             - id: check-plain-js-live-docs-tag
@@ -194,42 +133,19 @@ jobs:
             - name: Publish plain-js-live-docs@next
               if: steps.check-plain-js-live-docs-tag.outputs.isLibTag != 'true' && steps.check-plain-js-live-docs-package.outputs.isLibPackageChanged == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/master'
               run: |
+                  npm ci
                   cd ./dist/plain-js-live-docs
                   npm publish --tag next --access public
+            - name: Publish plain-js-live-docs@latest
+              if: steps.check-plain-js-live-docs-tag.outputs.isLibTag == 'true'
+              run: |
+                  npm ci
+                  cd ./dist/plain-js-live-docs
+                  npm publish
               env:
                   NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
-
-    publish-ng-live-docs-latest:
-      needs: [build-ng-live-docs]
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v2
-        - uses: actions/setup-node@v1
-          with:
-            node-version: '13'
-            registry-url: https://registry.npmjs.org/
-        - uses: actions/cache@v1
-          with:
-            path: ./node_modules
-            key: ${{github.sha}}-node_modules
-        - uses: actions/cache@v1
-          with:
-            path: ./dist/ng-live-docs
-            key: ${{github.sha}}-ng-live-docs
-        - id: check-ng-live-docs-tag
-          uses: ./.github/actions/check-lib-tag
-          with:
-            lib-name: 'ng-live-docs'
-        - name: Publish ng-live-docs@latest
-          if: steps.check-ng-live-docs-tag.outputs.isLibTag == 'true'
-          run: |
-            cd ./dist/ng-live-docs
-            npm publish
-          env:
-            NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-
-    publish-ng-live-docs-next:
+    publish-ng-live-docs:
       needs: [build-ng-live-docs]
       runs-on: ubuntu-latest
       steps:
@@ -243,10 +159,6 @@ jobs:
           with:
             node-version: '13'
             registry-url: https://registry.npmjs.org/
-        - uses: actions/cache@v1
-          with:
-            path: ./node_modules
-            key: ${{github.sha}}-node_modules
         - uses: actions/cache@v1
           with:
             path: ./dist/ng-live-docs
@@ -264,6 +176,11 @@ jobs:
           run: |
             cd ./dist/ng-live-docs
             npm publish --tag next --access public
+        - name: Publish ng-live-docs@latest
+          if: steps.check-ng-live-docs-tag.outputs.isLibTag == 'true'
+          run: |
+            cd ./dist/ng-live-docs
+            npm publish
           env:
             NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 

@@ -4,3 +4,4 @@
  */
 
 export * from './example-viewer.component';
+export * from './example-viewer.module';
