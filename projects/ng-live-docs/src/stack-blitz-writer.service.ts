@@ -36,13 +36,6 @@ interface StackBlitzFileSystem {
 }
 
 /**
- * Map of package name to version numbers
- */
-interface StackBlitzDependencies {
-    [packageName: string]: string;
-}
-
-/**
  *
  * Given an existing stackblitz containing a few placeholders, it modifies that stackblitz adding a new component
  * to app.component.html and its module to app.module.ts
@@ -78,7 +71,7 @@ export class StackBlitzWriterService {
         // this.fetchSbTemplate();
     }
 
-    private template: [StackBlitzFileSystem, StackBlitzDependencies] = null;
+    private template: StackBlitzFileSystem = null;
 
     /**
      * @param entry The example to be displayed in StackBlitz
@@ -91,7 +84,8 @@ export class StackBlitzWriterService {
             exampleModule = this.docRetriever.getModule(moduleName);
         }
 
-        const [templateFiles, dependencies] = await this.fetchSbTemplate();
+        const templateFiles = await this.fetchSbTemplate();
+        const dependencies = JSON.parse(templateFiles['package.json']).dependencies;
         const [mergedFiles, openFile] = this.createPatch(templateFiles, exampleComponent, exampleModule);
 
         const project: Project = {
@@ -154,10 +148,10 @@ export class StackBlitzWriterService {
     }
 
     /**
-     * Fetches an existing Stackblitz's files and dependencies by embedding it on the page and removing it when finished.
+     * Fetches an existing Stackblitz's files by embedding it on the page and removing it when finished.
      * The result is cached for future calls.
      */
-    private async fetchSbTemplate(): Promise<[StackBlitzFileSystem, StackBlitzDependencies]> {
+    private async fetchSbTemplate(): Promise<StackBlitzFileSystem> {
         if (this.template) {
             return Promise.resolve(this.template);
         }
@@ -171,7 +165,7 @@ export class StackBlitzWriterService {
         iframeContainerParent.style.position = 'absolute';
         document.body.appendChild(iframeContainerParent);
         const vm = await sdk.embedProjectId(iframeContainer, this.stackBlitzInfo.templateId, { view: 'editor' });
-        this.template = [await vm.getFsSnapshot(), await vm.getDependencies()];
+        this.template = await vm.getFsSnapshot();
         document.body.removeChild(iframeContainerParent);
         return Promise.resolve(this.template);
     }
