@@ -31,4 +31,4 @@ a theme to be used.
 
 # How to use it
 
-For Angular based libraries, please look at 'How to use it' it section of './projects/ng-live-docs/README.md'
+For Angular based libraries, please look at 'How to use it' it section of [a relative link](./projects/ng-live-docs/README.md)
