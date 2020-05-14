@@ -4,3 +4,4 @@
  */
 
 export * from './documentation-container.component';
+export * from './documentation-container.module';

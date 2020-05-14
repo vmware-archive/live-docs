@@ -4,3 +4,4 @@
  */
 
 export * from './source-code-viewer.component';
+export * from './source-code-viewer.module';

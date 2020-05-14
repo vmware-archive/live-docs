@@ -2,8 +2,8 @@
   "name": "@vmw/plain-js-live-docs",
   "version": "0.0.0",
   "peerDependencies": {
-    "@clr/ui": "2.2.1",
-    "@clr/icons": "2.2.1",
+    "@clr/ui": "^2",
+    "@clr/icons": "^2",
     "lit-html": "1.1.2",
     "prismjs": "1.17.1"
   }

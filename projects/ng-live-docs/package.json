@@ -5,9 +5,9 @@
     "@angular/common": "8.2.8",
     "@angular/core": "8.2.8",
     "@angular/platform-browser": "8.2.8",
-    "@clr/angular": "2.2.1",
-    "@clr/ui": "2.2.1",
-    "@clr/icons": "2.2.1"
+    "@clr/angular": "^2",
+    "@clr/ui": "^2",
+    "@clr/icons": "^2"
   },
   "dependencies": {
     "@compodoc/compodoc": "1.1.11",
