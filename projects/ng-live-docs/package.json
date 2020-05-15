@@ -1,6 +1,6 @@
 {
   "name": "@vmw/ng-live-docs",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "peerDependencies": {
     "@angular/common": "8.2.8",
     "@angular/core": "8.2.8",
@@ -12,6 +12,6 @@
   "dependencies": {
     "@compodoc/compodoc": "1.1.11",
     "@stackblitz/sdk": "1.3.0",
-    "@vmw/plain-js-live-docs": "0.0.1"
+    "@vmw/plain-js-live-docs": "0.0.2"
   }
 }
