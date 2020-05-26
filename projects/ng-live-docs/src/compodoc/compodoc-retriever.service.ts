@@ -55,11 +55,39 @@ export class CompoDocRetrieverService implements DocumentationRetrieverService {
 
     public getInputParameters(component: Type<unknown>): ApiParameters[] {
         const comp = this.getComponent(component);
-        return comp.inputsClass || [];
+        return comp.inputsClass ? comp.inputsClass.map((input) => {
+            return {...input, typeLink: this.getTypeLink(input.type)};
+        }) : [];
     }
 
     public getOutputParameters(component: Type<unknown>): ApiParameters[] {
         const comp = this.getComponent(component);
-        return comp.outputsClass || [];
+        return comp.outputsClass ? comp.outputsClass.map((output) => {
+            return {...output, typeLink: this.getTypeLink(output.type)};
+        }) : [];
+    }
+
+    private getTypeLink(type: string): string {
+        const rawType = type.split('[')[0].split('<')[0];
+        for (const documentationJson of this.documentationJson) {
+            for (const typeLink of Object.keys(documentationJson)) {
+                if (documentationJson[typeLink].find) {
+                    const typeDoc = documentationJson[typeLink].find(c => c.name === rawType);
+                    if (typeDoc) {
+                        return typeLink + '/' + rawType + '.html';
+                    }
+                } else {
+                    for (const innerTypeLink of Object.keys(documentationJson[typeLink])) {
+                        if (documentationJson[typeLink][innerTypeLink].find) {
+                            const typeDoc = documentationJson[typeLink][innerTypeLink].find(c => c.name === rawType);
+                            if (typeDoc) {
+                                return typeLink + '/' + innerTypeLink + '.html#' + rawType;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return undefined;
     }
 }
