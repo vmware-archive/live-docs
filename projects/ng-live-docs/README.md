@@ -42,6 +42,10 @@ in the following way:
 
 Please refer to [apiviewer example](../example-ng-app/src/example-components/apiviewer) to get an idea about how to create an example and its module
 
+## Hosting Compodoc (optional)
+
+- Optionally, your application can host compodoc to allow the type arguments in the API viewer to link to more extensive documentation. To do this generate the compodoc by running `compodoc -p tsconfig.json` in your relevant library. Add this generated folder to the assets of your Angular app.
+
 #### App entry module changes:
 - Import the generated doc jsons into app.module.ts as following
 
@@ -73,14 +77,16 @@ Please refer to [apiviewer example](../example-ng-app/src/example-components/api
             moduleFinder?(componentName: string): string;
         };
 
+- Recall the asset URL that you hosted the Compodoc at. That will be passed below. 
 
-- Provide the above 3 resources(2 docJsons and sbInfo) to the NgLiveDocs module inside AppModule
+
+- Provide the above 4 resources (2 docJsons, sbInfo, assetUrl) to the NgLiveDocs module inside AppModule
 
         @NgModule({
             ...
             imports: [
                 ...
-                NgLiveDocsModule.forRoot([docJson1, docJson2], sbInfo),
+                NgLiveDocsModule.forRoot([docJson1, docJson2], sbInfo, assetUrl),
                 ...
             ],
             ...
