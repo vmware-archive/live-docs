@@ -68,16 +68,22 @@ export class CompoDocRetrieverService implements DocumentationRetrieverService {
     }
 
     private getTypeLink(type: string): string {
+        // Extract the outermost Typescript type of the given type string.
         const rawType = type.split('[')[0].split('<')[0];
+        // Check every documentation JSON registered with the library.
         for (const documentationJson of this.documentationJson) {
+            // Check every documentation type in the given documentation
             for (const typeLink of Object.keys(documentationJson)) {
+                // If it is a list, attempt to find the given raw type
                 if (documentationJson[typeLink].find) {
                     const typeDoc = documentationJson[typeLink].find(c => c.name === rawType);
                     if (typeDoc) {
                         return typeLink + '/' + rawType + '.html';
                     }
                 } else {
+                    // Else check one level deeper because it is the 'miscellaneous' section.
                     for (const innerTypeLink of Object.keys(documentationJson[typeLink])) {
+                        // If it is an array, find the given raw type.
                         if (documentationJson[typeLink][innerTypeLink].find) {
                             const typeDoc = documentationJson[typeLink][innerTypeLink].find(c => c.name === rawType);
                             if (typeDoc) {

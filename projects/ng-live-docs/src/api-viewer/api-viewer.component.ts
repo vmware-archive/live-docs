@@ -8,7 +8,7 @@ import {ApiParameters, DocumentationRetrieverService} from '../documentation-ret
 import { COMPODOC_URL } from '../ng-live-docs.module';
 
 @Component({
-    selector: ' vmw-api-viewer',
+    selector: 'vmw-api-viewer',
     templateUrl: './api-viewer.component.html',
     styleUrls: ['./api-viewer.component.scss'],
 })

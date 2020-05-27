@@ -13,10 +13,6 @@ jobs:
         name: Linting
         steps:
             - uses: actions/checkout@v2
-            - uses: actions/cache@v1
-              with:
-                  path: ./node_modules
-                  key: ${{github.sha}}-node_modules
             - run: |
                   npm ci
                   npm run lint
@@ -43,6 +39,10 @@ jobs:
             - uses: actions/checkout@v2
             - uses: actions/cache@v1
               with:
+                path: ./dist/plain-js-live-docs
+                key: ${{github.sha}}-plain-js-live-docs
+            - uses: actions/cache@v1
+              with:
                 path: ./dist/ng-live-docs
                 key: ${{github.sha}}-ng-live-docs
             - run: |
@@ -57,8 +57,12 @@ jobs:
             - uses: actions/checkout@v2
             - uses: actions/cache@v1
               with:
+                  path: ./dist/plain-js-live-docs
+                  key: ${{github.sha}}-plain-js-live-docs
+            - uses: actions/cache@v1
+              with:
                   path: ./dist/ng-live-docs
-                  key: ${{ github.sha }}-ng-live-docs
+                  key: ${{github.sha}}-ng-live-docs
             - uses: actions/cache@v1
               with:
                   path: ./dist/examples
@@ -67,7 +71,7 @@ jobs:
                   npm ci
                   npm run build-live-docs-doc
                   npm run build-examples-doc
-                  npm run build:example-ng-app
+                  npm run build:example-ng-app-prod
 
     unit-testing:
         runs-on: ubuntu-latest
@@ -79,6 +83,14 @@ jobs:
               with:
                   path: ./coverage
                   key: coverage
+            - uses: actions/cache@v1
+              with:
+                  path: ./dist/plain-js-live-docs
+                  key: ${{github.sha}}-plain-js-live-docs
+            - uses: actions/cache@v1
+              with:
+                path: ./dist/ng-live-docs
+                key: ${{github.sha}}-ng-live-docs
             - name: Run unit-tests
               run: |
                   npm ci
@@ -90,7 +102,7 @@ jobs:
     gh-pages-deploy:
         runs-on: ubuntu-latest
         name: Deploying to Github pages
-        needs: [build-example-ng-app]
+        needs: [build-example-ng-app, unit-testing]
         steps:
             - uses: actions/checkout@v2
             - uses: actions/cache@v1
@@ -105,7 +117,7 @@ jobs:
                   GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
     publish-plain-js-live-docs:
-        needs: [build-plain-js-live-docs]
+        needs: [build-plain-js-live-docs, build-example-ng-app, unit-testing]
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
@@ -122,6 +134,8 @@ jobs:
               with:
                   path: ./dist/plain-js-live-docs
                   key: ${{github.sha}}-plain-js-live-docs
+            - name: Install node_modules
+              run: npm ci
             - id: check-plain-js-live-docs-tag
               uses: ./.github/actions/check-lib-tag
               with:
@@ -146,7 +160,7 @@ jobs:
                   NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
     publish-ng-live-docs:
-      needs: [build-ng-live-docs]
+      needs: [build-ng-live-docs, build-example-ng-app, unit-testing]
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@v2
@@ -163,6 +177,8 @@ jobs:
           with:
             path: ./dist/ng-live-docs
             key: ${{github.sha}}-ng-live-docs
+        - name: Install node_modules
+          run: npm ci
         - id: check-ng-live-docs-tag
           uses: ./.github/actions/check-lib-tag
           with:
