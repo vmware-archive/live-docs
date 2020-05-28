@@ -56,7 +56,7 @@ const DOCUMENTATION: CompodocSchema[] = [{
     }
 }];
 
-fdescribe('CompoDocRetrieverService', () => {
+describe('CompoDocRetrieverService', () => {
 
     const compoDocRetrieverService = new CompoDocRetrieverService(DOCUMENTATION);
 

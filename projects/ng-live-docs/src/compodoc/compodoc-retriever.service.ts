@@ -80,17 +80,15 @@ export class CompoDocRetrieverService implements DocumentationRetrieverService {
      * for example "compodoc/classes/ColumnConfig" or "compodoc/types#ColumnConfigType"
      */
     private getTypeLink(type: string): string {
-        // Extract the outermost Typescript type of the given type string.
         const rawType = type.split('[')[0].split('<')[0];
-        // Check every documentation JSON registered with the library
         const found = this.traverseDocumentation((item) => item.name === rawType);
         if (!found) {
             return '';
         }
         if (MISCELLANEOUS_LEVEL_TYPES.indexOf(found.itemType) !== -1) {
-            return 'miscellaneous' + '/' + found.itemType + '.html#' + found.name;
+            return `miscellaneous/${found.itemType}.html#${found.name}`;
         }
-        return found.itemType + '/' + found.name + '.html';
+        return `${found.itemType}/${found.name}.html`;
     }
 
     /**
