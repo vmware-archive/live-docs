@@ -5,7 +5,7 @@
     "entryFile": "src/public-api.ts"
   },
   "whitelistedNonPeerDependencies": [
-    "@compodoc/compodoc",
+    "rbradford-compodoc",
     "@stackblitz/sdk",
     "@vmw/plain-js-live-docs"
   ]

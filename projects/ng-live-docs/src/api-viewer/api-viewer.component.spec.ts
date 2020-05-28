@@ -5,4 +5,5 @@
 
 import {ApiViewerComponent} from './api-viewer.component';
 
-describe('ApiViewerComponent', () => {});
+describe('ApiViewerComponent', () => {
+});

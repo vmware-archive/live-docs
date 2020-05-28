@@ -24,6 +24,11 @@ export const DOCUMENTATION_DATA = new InjectionToken<CompodocSchema[]>(
 );
 
 /**
+ * A token that is used to provide the url where the raw compodoc output is located.
+ */
+export const COMPODOC_URL = new InjectionToken<string>('COMPODOC_URL');
+
+/**
  * Token that makes Stqckblitz JSON data available to factory functions
  */
 export const STACKBLITZ_DATA = new InjectionToken<StackBlitzInfo>(
@@ -51,7 +56,7 @@ export class NgLiveDocsModule {
      * Called in the host package importing this doc library for providing the documentation JSONs needed for
      * {@link CompoDocRetrieverService}
      */
-    public static forRoot(documentations: CompodocSchema[], stackblitzData: StackBlitzInfo): ModuleWithProviders {
+    public static forRoot(documentations: CompodocSchema[], stackblitzData: StackBlitzInfo, compodocUrl?: string): ModuleWithProviders {
         return {
             ngModule: NgLiveDocsModule,
             providers: [
@@ -74,6 +79,10 @@ export class NgLiveDocsModule {
                     deps: [STACKBLITZ_INFO, DocumentationRetrieverService],
                     useFactory: getStackBlitzWriter,
                 },
+                {
+                    provide: COMPODOC_URL,
+                    useValue: compodocUrl
+                }
             ],
         };
     }
