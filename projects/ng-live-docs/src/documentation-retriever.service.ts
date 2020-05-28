@@ -21,7 +21,7 @@ export interface ApiParameters {
     /**
      * Represents the link type of object this is as taken from Compodoc.
      */
-    linkType: string;
+    typeLink?: string;
     /**
      * Represents JS doc of input/output property
      */

@@ -5,7 +5,10 @@
 
 import { Type } from '@angular/core';
 import { ApiParameters, DocumentationRetrieverService } from '../documentation-retriever.service';
-import { CompodocComponent, CompodocModule, CompodocSchema } from './compodoc-schema';
+import { CompodocComponent, CompodocModule, CompodocSchema, GenericCompodocItem, RawGenericCompodocItem } from './compodoc-schema';
+
+const TOP_LEVEL_TYPES = ['classes', 'injectables', 'interfaces', 'modules', 'components', 'directives'];
+const MISCELLANEOUS_LEVEL_TYPES = ['variables', 'functions', 'typealiases', 'enumerations'];
 
 /**
  * This service retrieves specific properties from compodoc generated documentation
@@ -55,45 +58,73 @@ export class CompoDocRetrieverService implements DocumentationRetrieverService {
 
     public getInputParameters(component: Type<unknown>): ApiParameters[] {
         const comp = this.getComponent(component);
-        return comp.inputsClass ? comp.inputsClass.map((input) => {
-            return {...input, typeLink: this.getTypeLink(input.type)};
-        }) : [];
+        return this.addTypeLink(comp.inputsClass);
     }
 
     public getOutputParameters(component: Type<unknown>): ApiParameters[] {
         const comp = this.getComponent(component);
-        return comp.outputsClass ? comp.outputsClass.map((output) => {
-            return {...output, typeLink: this.getTypeLink(output.type)};
-        }) : [];
+        return this.addTypeLink(comp.outputsClass);
     }
 
+    /**
+     * Adds the correct type link to each parameter if it can be found/
+     */
+    private addTypeLink(params: ApiParameters[]): ApiParameters[] {
+        return params ? params.map(p => ({...p, typeLink: this.getTypeLink(p.type)})) : [];
+    }
+
+    /**
+     * Parses types that can include generics, including both array types: Type[] or Array<Type> and creates a link for it.
+     * @param type The name of a type as a string, one of the top level keys in the generated JSON
+     * @return  A relative url that can be used to link to the compodoc documentation,
+     * for example "compodoc/classes/ColumnConfig" or "compodoc/types#ColumnConfigType"
+     */
     private getTypeLink(type: string): string {
         // Extract the outermost Typescript type of the given type string.
         const rawType = type.split('[')[0].split('<')[0];
-        // Check every documentation JSON registered with the library.
+        // Check every documentation JSON registered with the library
+        const found = this.traverseDocumentation((item) => item.name === rawType);
+        if (!found) {
+            return '';
+        }
+        if (MISCELLANEOUS_LEVEL_TYPES.indexOf(found.itemType) !== -1) {
+            return 'miscellaneous' + '/' + found.itemType + '.html#' + found.name;
+        }
+        return found.itemType + '/' + found.name + '.html';
+    }
+
+    /**
+     * Finds the first item in the Compodoc documentation where the callback returns true.
+     */
+    private traverseDocumentation(callback: TraverseCompodocItemsCallback): GenericCompodocItem {
         for (const documentationJson of this.documentationJson) {
             // Check every documentation type in the given documentation
-            for (const typeLink of Object.keys(documentationJson)) {
-                // If it is a list, attempt to find the given raw type
-                if (documentationJson[typeLink].find) {
-                    const typeDoc = documentationJson[typeLink].find(c => c.name === rawType);
-                    if (typeDoc) {
-                        return typeLink + '/' + rawType + '.html';
-                    }
-                } else {
-                    // Else check one level deeper because it is the 'miscellaneous' section.
-                    for (const innerTypeLink of Object.keys(documentationJson[typeLink])) {
-                        // If it is an array, find the given raw type.
-                        if (documentationJson[typeLink][innerTypeLink].find) {
-                            const typeDoc = documentationJson[typeLink][innerTypeLink].find(c => c.name === rawType);
-                            if (typeDoc) {
-                                return typeLink + '/' + innerTypeLink + '.html#' + rawType;
-                            }
-                        }
-                    }
+
+            for (const itemType of TOP_LEVEL_TYPES) {
+                const found = (documentationJson[itemType] as GenericCompodocItem[]).find((item) => callback(item));
+                if (found) {
+                    return {...found, itemType};
+                }
+            }
+            for (const itemType of MISCELLANEOUS_LEVEL_TYPES) {
+                const found = (documentationJson.miscellaneous[itemType] as GenericCompodocItem[]).find((item) => callback(item));
+                if (found) {
+                    return {...found, itemType};
                 }
             }
         }
         return undefined;
     }
+}
+
+/**
+ * The type of data that can be passed as a callback to traverse a documentation tree.
+ */
+interface TraverseCompodocItemsCallback {
+    /**
+     * @return undefined or null if the traversal should continue, otherwise the returned object will be
+     * returned to the traverse caller.
+     */
+    // tslint:disable-next-line: callable-types
+    (item: RawGenericCompodocItem): boolean;
 }

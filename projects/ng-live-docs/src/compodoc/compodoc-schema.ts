@@ -15,13 +15,38 @@ import {ApiParameters} from '../documentation-retriever.service';
 export interface CompodocSchema {
     components: CompodocComponent[];
     modules: CompodocModule[];
+    interfaces: RawGenericCompodocItem[];
+    injectables: RawGenericCompodocItem[];
+    classes: RawGenericCompodocItem[];
+    directives: RawGenericCompodocItem[];
+    miscellaneous: {
+        variables: RawGenericCompodocItem[];
+        functions: RawGenericCompodocItem[];
+        typealiases: RawGenericCompodocItem[];
+        enumerations: RawGenericCompodocItem[];
+    };
+}
+
+export interface RawGenericCompodocItem {
+    name: string;
+}
+
+export interface GenericCompodocItem {
+    /**
+     * The name of this Compodoc item.
+     */
+    name: string;
+    /**
+     * Key that this object is located at within the Compodoc JSON, e.g., variables, directives, components.
+     * Could be top level or under miscellaneous (variables, functions, typealiases, enumerations)
+     */
+    itemType: string;
 }
 
 /**
  * Component description as defined in the Compodoc generated documentation JSON
  */
-export interface CompodocComponent {
-    name: string;
+export interface CompodocComponent extends RawGenericCompodocItem {
     description: string;
     sourceCode: string;
     templateUrl: string[];
@@ -34,11 +59,7 @@ export interface CompodocComponent {
     selector: string;
 }
 
-export interface CompodocModule {
-    /**
-     * Name of the class that has the @NgModule() declaration
-     */
-    name: string;
+export interface CompodocModule extends RawGenericCompodocItem {
     path: string;
     sourceCode: string;
     children: {

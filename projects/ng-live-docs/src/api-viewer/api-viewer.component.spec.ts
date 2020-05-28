@@ -6,7 +6,4 @@
 import {ApiViewerComponent} from './api-viewer.component';
 
 describe('ApiViewerComponent', () => {
-    it('needs at least one test', () => {
-        expect(1).toEqual(1);
-    });
 });

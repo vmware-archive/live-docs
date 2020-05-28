@@ -38,7 +38,7 @@
             </td>
             <td>
                 <p *ngIf="!compodocUrl || !par.typeLink">{{ par.type }}</p>
-                <a *ngIf="compodocUrl && par.typeLink" [href]="compodocUrl + '/' + par.typeLink">{{ par.type }}</a>
+                <a *ngIf="compodocUrl && par.typeLink" [href]="'../' + compodocUrl + '/' + par.typeLink">{{ par.type }}</a>
             </td>
             <td class="left"><div [innerHTML]="par.description"></div></td>
         </tr>

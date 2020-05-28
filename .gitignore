@@ -12,6 +12,7 @@
 /coverage
 npm-debug.log
 yarn-error.log
+.DS_Store
 
 # Generated Files
 projects/example-ng-app/gen
