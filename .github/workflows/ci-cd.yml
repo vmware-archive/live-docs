@@ -65,7 +65,7 @@ jobs:
                   key: ${{github.sha}}-ng-live-docs
             - uses: actions/cache@v1
               with:
-                  path: ./dist/examples
+                  path: ./dist/example-ng-app
                   key: ${{github.sha}}-example-ng-app
             - run: |
                   npm ci
