@@ -150,6 +150,8 @@ jobs:
                   npm ci
                   cd ./dist/plain-js-live-docs
                   npm publish --tag next --access public
+              env:
+                  NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
             - name: Publish plain-js-live-docs@latest
               if: steps.check-plain-js-live-docs-tag.outputs.isLibTag == 'true'
               run: |
@@ -192,6 +194,8 @@ jobs:
           run: |
             cd ./dist/ng-live-docs
             npm publish --tag next --access public
+          env:
+            NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
         - name: Publish ng-live-docs@latest
           if: steps.check-ng-live-docs-tag.outputs.isLibTag == 'true'
           run: |
