@@ -19,8 +19,8 @@ import exampleDocumentationJson from '../../gen/example-ng-app-doc.json';
 import liveDocsDocumentationJson from '../../gen/live-docs-doc.json';
 import { ApiViewerExampleModule } from '../example-components/apiviewer/api-viewer.example.module';
 
-export const docJson1: CompodocSchema = liveDocsDocumentationJson;
-export const docJson2: CompodocSchema = exampleDocumentationJson;
+export const docJson1: CompodocSchema = liveDocsDocumentationJson as unknown as CompodocSchema;
+export const docJson2: CompodocSchema = exampleDocumentationJson as unknown as CompodocSchema;
 export const sbInfo: StackBlitzInfo = {
   templateId: 'vcd-ui-cc-starter-clarity-v8-yhe4yg',
   projectName: 'Live docs',

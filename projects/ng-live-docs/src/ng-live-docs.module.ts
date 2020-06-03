@@ -56,7 +56,8 @@ export class NgLiveDocsModule {
      * Called in the host package importing this doc library for providing the documentation JSONs needed for
      * {@link CompoDocRetrieverService}
      */
-    public static forRoot(documentations: CompodocSchema[], stackblitzData: StackBlitzInfo, compodocUrl?: string): ModuleWithProviders {
+    public static forRoot(documentations: CompodocSchema[], stackblitzData: StackBlitzInfo, compodocUrl?: string)
+        : ModuleWithProviders<NgLiveDocsModule> {
         return {
             ngModule: NgLiveDocsModule,
             providers: [
