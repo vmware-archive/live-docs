@@ -92,7 +92,7 @@
             "main": "projects/example-ng-app/src/main.ts",
             "polyfills": "projects/example-ng-app/src/polyfills.ts",
             "tsConfig": "projects/example-ng-app/tsconfig.app.json",
-            "aot": false,
+            "aot": true,
             "assets": [
               "projects/example-ng-app/src/favicon.ico",
               "projects/example-ng-app/src/assets"
@@ -103,7 +103,8 @@
               "projects/example-ng-app/src/styles.scss"
             ],
             "scripts": [
-              "node_modules/@webcomponents/custom-elements/custom-elements.min.js",
+              "node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js",
+              "node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js",
               "node_modules/@clr/icons/clr-icons.min.js"
             ]
           },
@@ -120,7 +121,6 @@
               "sourceMap": false,
               "extractCss": true,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -209,6 +209,7 @@
           }
         }
       }
-    }},
+    }
+  },
   "defaultProject": "example-ng-app"
 }
