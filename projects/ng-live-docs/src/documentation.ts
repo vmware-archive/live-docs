@@ -6,6 +6,7 @@
 import { Type } from '@angular/core';
 import { Routes } from '@angular/router';
 import { DocumentationContainerComponent } from './documentation-container/documentation-container.component';
+import { ExampleViewerComponent } from './example-viewer/example-viewer.component';
 
 /**
  * Represents each entry in {@link DocumentationEntry.examples}, that is an examples that shows a particular usage of a components
@@ -92,11 +93,31 @@ export const Documentation = {
      * Returns angular routes used when displaying the documentation/examples for the components.
      */
     getRoutes(): Routes {
-        return Documentation.getAllEntries().map((documentationEntry: DocumentationEntry) => ({
+        let routes = Documentation.getAllEntries().map((documentationEntry: DocumentationEntry) => ({
             path: documentationEntry.urlSegment,
             component: DocumentationContainerComponent,
             data: { documentationEntry },
+            // Add children if there are multi-examples.
+            children: documentationEntry.examples && documentationEntry.examples.length ? [
+                ...documentationEntry.examples.map((exampleEntry: ExampleEntry) => ({
+                    path: exampleEntry.component.name.toLowerCase(),
+                    component: ExampleViewerComponent,
+                    data: { exampleEntry }
+                }))
+            ] : []
         }));
+        const redirectList = [];
+        // Add redirect routes.
+        routes.forEach(route => {
+            if (route.children && route.children.length > 1) {
+                redirectList.push({
+                    path: route.data.documentationEntry.urlSegment,
+                    redirectTo: route.data.documentationEntry.urlSegment + '/' + route.children[0].path
+                });
+            }
+        });
+        routes = redirectList.concat(routes);
+        return routes;
     },
 
     /**

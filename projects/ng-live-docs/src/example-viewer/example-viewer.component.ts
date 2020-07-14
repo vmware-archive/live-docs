@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-import {Component, ComponentFactoryResolver, Input, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, ComponentFactoryResolver, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {ActivatedRoute, Data} from '@angular/router';
 import {ExampleEntry} from '../documentation';
 import {DocumentationRetrieverService} from '../documentation-retriever.service';
 import {StackBlitzWriterService} from '../stack-blitz-writer.service';
@@ -13,7 +14,7 @@ import {StackBlitzWriterService} from '../stack-blitz-writer.service';
     templateUrl: './example-viewer.component.html',
     styleUrls: ['./example-viewer.component.scss'],
 })
-export class ExampleViewerComponent {
+export class ExampleViewerComponent implements OnInit {
     /**
      * For showing and hiding of {@link SourceCodeViewerComponent} in the HTML
      */
@@ -26,7 +27,8 @@ export class ExampleViewerComponent {
     constructor(
         private resolver: ComponentFactoryResolver,
         private docRetriever: DocumentationRetrieverService,
-        private stackblitzWriter: StackBlitzWriterService
+        private stackblitzWriter: StackBlitzWriterService,
+        private route: ActivatedRoute
     ) {}
 
     /**
@@ -57,6 +59,16 @@ export class ExampleViewerComponent {
         }
         const factory = this.resolver.resolveComponentFactory(exampleEntry.component);
         this.exampleContainer.createComponent(factory);
+    }
+
+    ngOnInit(): void {
+        // If there is an exampleEntry in route data, use it to create the example component.
+        this.route.data.subscribe((data: Data) => {
+            if (data.exampleEntry) {
+                this._exampleEntry = data.exampleEntry;
+                this.createExample();
+            }
+        });
     }
 
     onCodeButtonClick(): void {

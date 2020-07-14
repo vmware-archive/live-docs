@@ -5,6 +5,7 @@
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { ApiViewerModule } from '../api-viewer/api-viewer.module';
 import { ExampleViewerModule } from '../example-viewer/example-viewer.module';
@@ -14,7 +15,7 @@ import { DocumentationContainerComponent } from './documentation-container.compo
 const declarations = [DocumentationContainerComponent];
 
 @NgModule({
-    imports: [ClarityModule, CommonModule, OverviewViewerModule, ApiViewerModule, ExampleViewerModule],
+    imports: [ClarityModule, CommonModule, OverviewViewerModule, ApiViewerModule, ExampleViewerModule, RouterModule],
     declarations: [...declarations],
     entryComponents: [DocumentationContainerComponent],
     exports: [...declarations, OverviewViewerModule, ApiViewerModule, ExampleViewerModule],
