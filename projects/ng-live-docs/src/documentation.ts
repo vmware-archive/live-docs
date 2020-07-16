@@ -5,6 +5,9 @@
 
 import { Type } from '@angular/core';
 import { Routes } from '@angular/router';
+import { DocumentationContainerApiComponent } from './documentation-container/documentation-container-api.component';
+import { DocumentationContainerDocumentationComponent } from './documentation-container/documentation-container-documentation.component';
+import { DocumentationContainerExampleComponent } from './documentation-container/documentation-container-example.component';
 import { DocumentationContainerComponent } from './documentation-container/documentation-container.component';
 import { ExampleViewerComponent } from './example-viewer/example-viewer.component';
 
@@ -93,31 +96,50 @@ export const Documentation = {
      * Returns angular routes used when displaying the documentation/examples for the components.
      */
     getRoutes(): Routes {
-        let routes = Documentation.getAllEntries().map((documentationEntry: DocumentationEntry) => ({
+        const routes = Documentation.getAllEntries().map((documentationEntry: DocumentationEntry) => ({
             path: documentationEntry.urlSegment,
             component: DocumentationContainerComponent,
-            data: { documentationEntry },
-            // Add children if there are multi-examples.
-            children: documentationEntry.examples && documentationEntry.examples.length ? [
-                ...documentationEntry.examples.map((exampleEntry: ExampleEntry) => ({
-                    path: exampleEntry.component.name.toLowerCase(),
-                    component: ExampleViewerComponent,
-                    data: { exampleEntry }
-                }))
-            ] : []
+            // Add three tabs as subroutes
+            children: [{
+                path: 'documentation',
+                component: DocumentationContainerDocumentationComponent,
+                data: { component: documentationEntry.component }
+            },
+            {
+                path: 'api',
+                component: DocumentationContainerApiComponent,
+                data: { component: documentationEntry.component }
+            },
+            {
+                path: 'example',
+                component: DocumentationContainerExampleComponent,
+                data: { examples: documentationEntry.examples ? documentationEntry.examples : [] },
+                children: documentationEntry.examples?.length ? [
+                    ...documentationEntry.examples.map((exampleEntry: ExampleEntry) => ({
+                        path: exampleEntry.component.name.toLowerCase(),
+                        component: ExampleViewerComponent,
+                        data: { exampleEntry }
+                    }))
+                ] : []
+            },
+            {
+                path: '',
+                redirectTo: 'documentation',
+                pathMatch: 'full'
+            }]
         }));
         const redirectList = [];
-        // Add redirect routes.
+        // Add redirect. The example route will be redirected to the first example.
         routes.forEach(route => {
-            if (route.children && route.children.length > 1) {
-                redirectList.push({
-                    path: route.data.documentationEntry.urlSegment,
-                    redirectTo: route.data.documentationEntry.urlSegment + '/' + route.children[0].path
+            if (route.children.length > 2 && route.children[2].children?.length > 1) {
+                route.children.unshift({
+                    path: 'example',
+                    redirectTo: `example/${route.children[2].children[0].path}`,
+                    pathMatch: 'full'
                 });
             }
         });
-        routes = redirectList.concat(routes);
-        return routes;
+        return [...redirectList, ...routes];
     },
 
     /**

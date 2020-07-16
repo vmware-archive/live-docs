@@ -65,8 +65,7 @@ export class ExampleViewerComponent implements OnInit {
         // If there is an exampleEntry in route data, use it to create the example component.
         this.route.data.subscribe((data: Data) => {
             if (data.exampleEntry) {
-                this._exampleEntry = data.exampleEntry;
-                this.createExample();
+                this.exampleEntry = data.exampleEntry;
             }
         });
     }

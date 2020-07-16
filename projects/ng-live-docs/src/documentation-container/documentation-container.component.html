@@ -1,35 +1,14 @@
 <clr-tabs>
     <clr-tab>
-        <button clrTabLink>Documentation</button>
-        <clr-tab-content>
-            <vmw-overview-viewer [component]="documentationEntry?.component"> </vmw-overview-viewer>
-        </clr-tab-content>
+        <button clrTabLink routerLink="documentation" routerLinkActive="active">Documentation</button>
     </clr-tab>
 
     <clr-tab>
-        <button clrTabLink>API</button>
-        <clr-tab-content>
-            <vmw-api-viewer [component]="documentationEntry?.component"> </vmw-api-viewer>
-        </clr-tab-content>
+        <button clrTabLink routerLink="api" routerLinkActive="active">API</button>
     </clr-tab>
 
     <clr-tab>
-        <button clrTabLink>Examples</button>
-        <clr-tab-content>
-            <div *ngIf="documentationEntry && documentationEntry.examples.length > 1">
-                <ul class="example-list">
-                    <li *ngFor="let item of documentationEntry.examples">
-                        <a [routerLink]="['./' + item.component.name.toLowerCase()]">{{item.title}}</a>
-                    </li>
-                </ul>
-            </div>
-            <router-outlet></router-outlet>
-            <div *ngIf="documentationEntry && documentationEntry.examples.length === 1">
-                <vmw-example-viewer
-                    [exampleEntry]="documentationEntry.examples[0]"
-                >
-                </vmw-example-viewer>
-            </div>
-        </clr-tab-content>
+        <button clrTabLink routerLink="example" routerLinkActive="active">Examples</button>
     </clr-tab>
 </clr-tabs>
+<router-outlet></router-outlet>
