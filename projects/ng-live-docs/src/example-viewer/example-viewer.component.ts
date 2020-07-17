@@ -58,7 +58,8 @@ export class ExampleViewerComponent implements OnInit {
             return;
         }
         const factory = this.resolver.resolveComponentFactory(exampleEntry.component);
-        this.exampleContainer.createComponent(factory);
+        const res = this.exampleContainer.createComponent(factory);
+        res.changeDetectorRef.detectChanges();
     }
 
     ngOnInit(): void {
