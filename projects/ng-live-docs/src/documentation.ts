@@ -29,6 +29,11 @@ export interface ExampleEntry {
      * The title of the section under which this example will be placed
      */
     title: string;
+
+    /**
+     * The subroutes for this example
+     */
+    urlSegment: string;
 }
 
 /**
@@ -114,13 +119,11 @@ export const Documentation = {
                 path: 'example',
                 component: DocumentationContainerExampleComponent,
                 data: { examples: documentationEntry.examples ? documentationEntry.examples : [] },
-                children: documentationEntry.examples?.length ? [
-                    ...documentationEntry.examples.map((exampleEntry: ExampleEntry) => ({
-                        path: exampleEntry.component.name.toLowerCase(),
-                        component: ExampleViewerComponent,
-                        data: { exampleEntry }
-                    }))
-                ] : []
+                children: documentationEntry.examples?.length ? documentationEntry.examples.map((exampleEntry: ExampleEntry) => ({
+                    path: exampleEntry.urlSegment,
+                    component: ExampleViewerComponent,
+                    data: { exampleEntry }
+                })) : []
             },
             {
                 path: '',
