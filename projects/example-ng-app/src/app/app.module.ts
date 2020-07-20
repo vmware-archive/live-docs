@@ -5,6 +5,7 @@
 
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule } from '@angular/router';
 import {
   CompodocSchema,
   NgLiveDocsModule,
@@ -38,7 +39,8 @@ export const sbInfo: StackBlitzInfo = {
     BrowserAnimationsModule,
     ClarityModule,
     NgLiveDocsModule.forRoot([docJson1, docJson2], sbInfo),
-    ApiViewerExampleModule
+    ApiViewerExampleModule,
+    RouterModule.forRoot([])
   ],
   providers: [],
   bootstrap: [AppComponent]
