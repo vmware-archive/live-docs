@@ -15,6 +15,7 @@ export class AppComponent {
   componentDescriptor: ExampleEntry = {
     component: ApiViewerExampleComponent,
     forComponent: ApiViewerComponent,
-    title: 'Api viewer'
+    title: 'Api viewer',
+    urlSegment: 'api-viewer'
   };
 }
