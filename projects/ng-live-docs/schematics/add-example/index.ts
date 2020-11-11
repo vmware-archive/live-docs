@@ -4,16 +4,26 @@
  */
 
 import { experimental, normalize, strings } from '@angular-devkit/core';
-import { apply, applyTemplates, chain, mergeWith,
-    move, Rule, SchematicContext, SchematicsException,
-    Source, Tree, url } from '@angular-devkit/schematics';
+import {
+    apply,
+    applyTemplates,
+    chain,
+    mergeWith,
+    move,
+    Rule,
+    SchematicContext,
+    SchematicsException,
+    Source,
+    Tree,
+    url,
+} from '@angular-devkit/schematics';
 import { Change, getSourceNodes, InsertChange, NoopChange } from 'schematics-utilities';
 import * as ts from 'typescript';
 import { Schema as ExampleSchema } from './schema';
 
-const componentTypeMap: {[key: string]: RegExp} = {
+const componentTypeMap: { [key: string]: RegExp } = {
     component: /\w+component$/i,
-    directive: /\w+directive$/i
+    directive: /\w+directive$/i,
 };
 
 /**
@@ -72,13 +82,20 @@ function getComponentType(component: string): string {
  * projectRoot/app/\{components|directives\}/component-name/example-name/component-name-example-name.example.component.ts
  * projectRoot/app/\{components|directives\}/component-name/example-name/component-name-example-name.example.module.ts
  */
-function applyExampleComponentTemplate(exampleName: string, path: string): Source {
+function applyExampleComponentTemplate(
+    packageName: string,
+    moduleName: string,
+    exampleName: string,
+    path: string
+): Source {
     return apply(url('./files/example-component'), [
         applyTemplates({
-            dasherize: strings.dasherize,
-            name: exampleName
+            ...strings,
+            name: exampleName,
+            packageName,
+            moduleName,
         }),
-        move(normalize(path))
+        move(normalize(path)),
     ]);
 }
 
@@ -89,21 +106,25 @@ function applyExampleComponentTemplate(exampleName: string, path: string): Sourc
  *
  * projectRoot/app/\{components|directives\}/component-name/component-name.examples.module.ts
  */
-function applyExampleModuleTemplate(componentName: string,
-                                    componentType: string,
-                                    exampleName: string,
-                                    displayName: string,
-                                    path: string): Source {
+function applyExampleModuleTemplate(
+    packageName: string,
+    componentName: string,
+    componentType: string,
+    exampleName: string,
+    displayName: string,
+    path: string
+): Source {
     return apply(url('./files/example-module'), [
         applyTemplates({
             ...strings,
             insertWhiteSpace,
+            packageName,
             componentName,
             exampleName,
             componentType,
-            displayName
+            displayName,
         }),
-        move(normalize(path))
+        move(normalize(path)),
     ]);
 }
 
@@ -119,9 +140,9 @@ function applyRootModuleTemplate(componentName: string, componentType: string, p
         applyTemplates({
             ...strings,
             name: componentName,
-            componentType
+            componentType,
         }),
-        move(normalize(path))
+        move(normalize(path)),
     ]);
 }
 
@@ -160,19 +181,44 @@ function addImportStatement(fileName: string, nodes: ts.Node[], imports: ImportD
             // save all the existing fileName of import
             node.getChildren()
                 .filter(ts.isStringLiteral)
-                .map((n) => n.text)
-                .forEach((item) => filesSet.add(item));
+                .map((n: ts.StringLiteral) => n.text)
+                .forEach((item: string) => filesSet.add(item));
         }
     });
 
-    let insertImportString = '';
-    imports.forEach((declaration) => {
-        // skip if fileName already exists
-        if (!filesSet.has(declaration.fileName)) {
-            insertImportString += `\nimport { ${declaration.symbolName} } from '${declaration.fileName}';`;
-        }
-    });
+    const insertImportString = imports
+        .filter(
+            (declaration: ImportDeclaration) => !filesSet.has(declaration.fileName)
+        )
+        .map(
+            (declaration: ImportDeclaration) => `\nimport { ${declaration.symbolName} } from '${declaration.fileName}';`
+        )
+        .join('');
     return new InsertChange(fileName, lastImportNode ? lastImportNode.getEnd() : 0, insertImportString);
+}
+
+function findArrayNodeByIdentifier(nodes: ts.Node[], identifier: string): ts.Node {
+    const identifierNode = nodes.find(
+        (node: ts.Node) => node.kind === ts.SyntaxKind.Identifier && node.getText() === identifier
+    );
+    if (!identifierNode || !identifierNode.parent) {
+        throw new SchematicsException('Array identifier not found');
+    }
+
+    let siblings = identifierNode.parent.getChildren();
+    const index = siblings.indexOf(identifierNode);
+    siblings = siblings.slice(index);
+
+    const arrayLiteralExpression = siblings.find((node: ts.Node) => node.kind === ts.SyntaxKind.ArrayLiteralExpression);
+    if (!arrayLiteralExpression) {
+        throw new SchematicsException('Array not found');
+    }
+
+    const listNode = arrayLiteralExpression.getChildren().find((node: ts.Node) => node.kind === ts.SyntaxKind.SyntaxList);
+    if (!listNode) {
+        throw new SchematicsException('Examples array content not found');
+    }
+    return listNode;
 }
 
 /**
@@ -205,31 +251,9 @@ function addImportStatement(fileName: string, nodes: ts.Node[], imports: ImportD
  * ```
  */
 function addDocumentationEntry(fileName: string, nodes: ts.Node[], componentName: string, displayName: string): Change {
-    // find the examples list identifier
-    const examplesNode = nodes.find((node: ts.Node) =>
-        node.kind === ts.SyntaxKind.Identifier && node.getText() === 'examples');
-    if (!examplesNode || !examplesNode.parent) {
-        throw new SchematicsException('No existing document entry examples array');
-    }
-
-    // find examples array
-    let examplesSiblings = examplesNode.parent.getChildren();
-    const examplesIndex = examplesSiblings.indexOf(examplesNode);
-    examplesSiblings = examplesSiblings.slice(examplesIndex);
-    const examplesArrayLiteralExpression = examplesSiblings.find((node) =>
-        node.kind === ts.SyntaxKind.ArrayLiteralExpression);
-    if (!examplesArrayLiteralExpression) {
-        throw new SchematicsException('Examples array not found');
-    }
-
-    // get current list content
-    const examplesListNode = examplesArrayLiteralExpression.getChildren()
-        .find((node) => node.kind === ts.SyntaxKind.SyntaxList);
-    if (!examplesListNode) {
-        throw new SchematicsException('Examples array content not found');
-    }
+    const examplesListNode = findArrayNodeByIdentifier(nodes, 'examples');
     const currentExamples = examplesListNode.getText().trim();
-    const insertExample = `${currentExamples[currentExamples.length - 1] === ',' ? '' : ','}
+    const insertExample = `${currentExamples.endsWith(',') ? '' : ','}
         {
             component: ${componentName}ExampleComponent,
             forComponent: null,
@@ -262,38 +286,17 @@ function addDocumentationEntry(fileName: string, nodes: ts.Node[], componentName
  * ```
  */
 function addModuleImports(fileName: string, nodes: ts.Node[], moduleName: string): Change {
-    // find imports identifier
-    const importsNode = nodes.find((node) => node.getText() === 'imports');
-    if (!importsNode || !importsNode.parent) {
-        throw new SchematicsException('Module imports not found');
-    }
-
-    // find imports array
-    let importsSiblings = importsNode.parent.getChildren();
-    const importsIndex = importsSiblings.indexOf(importsNode);
-    importsSiblings = importsSiblings.slice(importsIndex);
-    const importsArrayLiteralExpression = importsSiblings.find((node) =>
-        node.kind === ts.SyntaxKind.ArrayLiteralExpression);
-    if (!importsArrayLiteralExpression) {
-        throw new SchematicsException('Imports array not found');
-    }
-
-    // get imports array content
-    const importsListNode = importsArrayLiteralExpression.getChildren()
-        .find((node) => node.kind === ts.SyntaxKind.SyntaxList);
-    if (!importsListNode) {
-        throw new SchematicsException('Imports array content not found');
-    }
+    const importsListNode = findArrayNodeByIdentifier(nodes, 'imports');
     const currentImports = importsListNode.getText().trim();
 
     // get existence of module
     const currentList = currentImports.split(/,/);
-    if (currentList.find((item) => item.trim() === moduleName)) {
+    if (currentList.find((item: string) => item.trim() === moduleName)) {
         // do nothing if module is added to array
         return new NoopChange();
     }
 
-    const insertImport = `${currentImports[currentImports.length - 1] === ',' ? '' : ','}
+    const insertImport = `${currentImports.endsWith(',') ? '' : ','}
         ${moduleName}`;
     return new InsertChange(fileName, importsListNode.getEnd(), insertImport);
 }
@@ -357,12 +360,15 @@ function addModuleImports(fileName: string, nodes: ts.Node[], moduleName: string
  *      ]
  * ```
  */
-function updateExistingModule(tree: Tree,
-                              fileName: string,
-                              imports: ImportDeclaration[],
-                              componentName: string,
-                              moduleName: string,
-                              updateDocumentEntry: boolean, displayName: string): Change[] {
+function updateExistingModule(
+    tree: Tree,
+    fileName: string,
+    imports: ImportDeclaration[],
+    componentName: string,
+    moduleName: string,
+    updateDocumentEntry: boolean,
+    displayName: string
+): Change[] {
     const buffer = tree.read(fileName);
     if (!buffer) {
         throw new SchematicsException(`No such file: ${fileName}`);
@@ -386,16 +392,26 @@ function updateExistingModule(tree: Tree,
 /**
  * Update existing module file. Use {@link updateExistingModule} to get and perform needed changes
  */
-function updateExistingModuleRule(fileName: string,
-                                  imports: ImportDeclaration[],
-                                  componentName: string,
-                                  moduleName: string,
-                                  updateDocumentEntry: boolean,
-                                  displayName: string = ''): Rule {
+function updateExistingModuleRule(
+    fileName: string,
+    imports: ImportDeclaration[],
+    componentName: string,
+    moduleName: string,
+    updateDocumentEntry: boolean,
+    displayName: string = ''
+): Rule {
     return (tree: Tree) => {
-        const changes = updateExistingModule(tree, fileName, imports, componentName, moduleName, updateDocumentEntry, displayName);
+        const changes = updateExistingModule(
+            tree,
+            fileName,
+            imports,
+            componentName,
+            moduleName,
+            updateDocumentEntry,
+            displayName
+        );
         const recorder = tree.beginUpdate(fileName);
-        changes.forEach((change) => {
+        changes.forEach((change: Change) => {
             if (change instanceof InsertChange) {
                 recorder.insertLeft(change.pos, change.toAdd);
             }
@@ -430,9 +446,11 @@ export function addExample(options: ExampleSchema): Rule {
         const exampleModuleFileName = `${exampleRootDir}/${exampleModuleName}`;
         const exampleRootModuleFileName = `${appRootDir}/examples.module.ts`;
 
-        finalRules.push(mergeWith(applyExampleComponentTemplate(
-            exampleName, exampleSubDir
-        )));
+        finalRules.push(
+            mergeWith(
+                applyExampleComponentTemplate(options.packageName, options.moduleName, exampleName, exampleSubDir)
+            )
+        );
 
         // update examples module or create a new one if it doesn't exist
         if (tree.exists(exampleModuleFileName)) {
@@ -446,13 +464,29 @@ export function addExample(options: ExampleSchema): Rule {
                     fileName: `./${strings.dasherize(options.exampleName)}/${strings.dasherize(exampleName)}.example.module`
                 }
             ];
-            finalRules.push(updateExistingModuleRule(
-                exampleModuleFileName, exampleImportList, exampleName, `${exampleName}ExampleModule`, true, options.displayName
-            ));
+            finalRules.push(
+                updateExistingModuleRule(
+                    exampleModuleFileName,
+                    exampleImportList,
+                    exampleName,
+                    `${exampleName}ExampleModule`,
+                    true,
+                    options.displayName
+                )
+            );
         } else {
-            finalRules.push(mergeWith(applyExampleModuleTemplate(
-                componentName, componentType, strings.classify(options.exampleName), options.displayName, exampleRootDir
-            )));
+            finalRules.push(
+                mergeWith(
+                    applyExampleModuleTemplate(
+                        options.packageName,
+                        componentName,
+                        componentType,
+                        strings.classify(options.exampleName),
+                        options.displayName,
+                        exampleRootDir
+                    )
+                )
+            );
         }
 
         // update root examples module or create a new one if it doesn't exist
@@ -460,12 +494,20 @@ export function addExample(options: ExampleSchema): Rule {
             const insertModule: ImportDeclaration[] = [
                 {
                     symbolName: `${componentName}ExamplesModule`,
-                    fileName: `./${componentType}s/${strings.dasherize(componentName)}/${strings.dasherize(componentName)}.examples.module`
-                }
+                    fileName: `./${componentType}s/${strings.dasherize(componentName)}/${strings.dasherize(
+                        componentName
+                    )}.examples.module`,
+                },
             ];
-            finalRules.push(updateExistingModuleRule(
-                exampleRootModuleFileName, insertModule, componentName, `${componentName}ExamplesModule`, false
-            ));
+            finalRules.push(
+                updateExistingModuleRule(
+                    exampleRootModuleFileName,
+                    insertModule,
+                    componentName,
+                    `${componentName}ExamplesModule`,
+                    false
+                )
+            );
         } else {
             finalRules.push(mergeWith(applyRootModuleTemplate(componentName, componentType, appRootDir)));
         }

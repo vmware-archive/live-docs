@@ -4,6 +4,14 @@
   "title": "My Service Schema",
   "type": "object",
   "properties": {
+    "packageName": {
+      "description": "Package name",
+      "type": "string"
+    },
+    "moduleName": {
+      "description": "Module name",
+      "type": "string"
+    },
     "componentName": {
       "description": "The component to add example",
       "type": "string"
@@ -18,6 +26,6 @@
     }
   },
   "required": [
-    "componentName", "exampleName", "displayName"
+    "packageName", "moduleName", "componentName", "exampleName", "displayName"
   ]
 }

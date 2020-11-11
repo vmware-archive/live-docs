@@ -4,6 +4,8 @@
  */
 
 export interface Schema {
+    packageName: string;
+    moduleName: string;
     componentName: string;
     exampleName: string;
     displayName: string;

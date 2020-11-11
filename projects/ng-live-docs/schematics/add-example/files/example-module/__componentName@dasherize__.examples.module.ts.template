@@ -5,7 +5,7 @@
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { <%= componentName + classify(componentType) %> } from '@vcd/ui-components';
+import { <%= componentName + classify(componentType) %> } from '<%= packageName %>';
 import { Documentation } from '@vmw/ng-live-docs';
 import { <%= componentName + exampleName %>ExampleComponent } from './<%= dasherize(exampleName) %>/<%= dasherize(componentName) + '-' + dasherize(exampleName) %>.example.component';
 import { <%= componentName + exampleName %>ExampleModule } from './<%= dasherize(exampleName) %>/<%= dasherize(componentName) + '-' + dasherize(exampleName) %>.example.module';
