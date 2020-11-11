@@ -9,6 +9,8 @@
     "build:example-ng-app-prod": "ng build example-ng-app --prod",
     "build:plainjs": "ng build plain-js-live-docs",
     "build:ng-live-docs": "ng build ng-live-docs; tsc -p projects/ng-live-docs/scripts/tsconfig.json",
+    "build:schematics": "cd projects/ng-live-docs && npm run build",
+    "postbuild:ng-live-docs": "npm run build:schematics",
     "test": "ng test",
     "test:ci:plainjs": "ng test plain-js-live-docs --watch=false --browsers ChromeHeadlessNoSandbox --code-coverage",
     "test:ci:ng-live-docs": "ng test ng-live-docs --watch=false --browsers ChromeHeadlessNoSandbox --code-coverage",
@@ -39,6 +41,7 @@
     "prismjs": "1.21.0",
     "rbradford-compodoc": "1.1.11",
     "rxjs": "6.5.5",
+    "schematics-utilities": "2.0.2",
     "tslib": "1.10.0",
     "zone.js": "0.10.2"
   },

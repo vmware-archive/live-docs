@@ -7,6 +7,7 @@
   "whitelistedNonPeerDependencies": [
     "rbradford-compodoc",
     "@stackblitz/sdk",
-    "@vmw/plain-js-live-docs"
+    "@vmw/plain-js-live-docs",
+    "schematics-utilities"
   ]
 }
