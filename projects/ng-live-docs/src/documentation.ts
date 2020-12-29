@@ -21,11 +21,6 @@ export interface ExampleEntry {
     component: Type<unknown>;
 
     /**
-     * The component for which this example is written
-     */
-    forComponent: Type<unknown>;
-
-    /**
      * The title of the section under which this example will be placed
      */
     title: string;

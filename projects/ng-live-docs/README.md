@@ -5,7 +5,8 @@ This library was generated with [Angular CLI](https://github.com/angular/angular
 ## Code scaffolding
 
 Run `ng generate component component-name --project ng-live-docs` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project ng-live-docs`.
-> Note: Don't forget to add `--project ng-live-docs` or else it will be added to the default project in your `angular.json` file. 
+
+> Note: Don't forget to add `--project ng-live-docs` or else it will be added to the default project in your `angular.json` file.
 
 ## Build
 
@@ -16,12 +17,13 @@ Run `ng build ng-live-docs` to build the project. The build artifacts will be st
 Run `ng test ng-live-docs` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
 ## How to use it
-- Overview
-    - [To install](#to-install)
-    - [Generate documentation](#generate-documentation)
-    - [Creating examples and their modules](#creating-examples-and-their-modules)
-    - [App entry module changes](#app-entry-module-changes)
-    - [Adding examples to the HTML](#Adding-examples-to-the-html)
+
+-   Overview
+    -   [To install](#to-install)
+    -   [Generate documentation](#generate-documentation)
+    -   [Creating examples and their modules](#creating-examples-and-their-modules)
+    -   [App entry module changes](#app-entry-module-changes)
+    -   [Adding examples to the HTML](#Adding-examples-to-the-html)
 
 #### To install
 
@@ -29,16 +31,18 @@ Run `ng test ng-live-docs` to execute the unit tests via [Karma](https://karma-r
 `npm install @vmw/ng-live-docs@next` for the upcoming release, which could contain APIs that may not be stable
 
 #### Generate documentation:
-- Once installed, documentation json files have to be generated for the angular components library and its examples app
-in the following way:
 
-        node $NODE_DEBUG_OPTION node_modules/@vmw/ng-live-docs/index.js <path_to_package_tsconfig> <path_to_package_entryPoint_Or_publicApi> <docJson_outputFile_path>
+-   Once installed, documentation json files have to be generated for the angular components library and its examples app
+    in the following way:
+
+            node $NODE_DEBUG_OPTION node_modules/@vmw/ng-live-docs/index.js <path_to_package_tsconfig> <path_to_package_entryPoint_Or_publicApi> <docJson_outputFile_path>
 
 #### Creating examples and their modules:
-- Two files are required for every example and they HAVE to be named in the following format for them to work with NgLiveDocs
 
-    - <component_name>.example.component.ts. The component class name must be <component_name>ExampleComponent
-    - <component_name>.example.module.ts. The module class name must be <component_name>ExampleModule. For every `.component` a `.module` has to be created.
+-   Two files are required for every example and they HAVE to be named in the following format for them to work with NgLiveDocs
+
+    -   <component_name>.example.component.ts. The component class name must be <component_name>ExampleComponent
+    -   <component_name>.example.module.ts. The module class name must be <component_name>ExampleModule. For every `.component` a `.module` has to be created.
 
 Please refer to [apiviewer example](../example-ng-app/src/example-components/apiviewer) to get an idea about how to create an example and its module
 
@@ -46,75 +50,72 @@ Please refer to [apiviewer example](../example-ng-app/src/example-components/api
 
 Your application may host compodoc to allow the type arguments in the API viewer to link to more extensive documentation. To do:
 
-- Generate the compodoc by running compodoc -p tsconfig.json in your relevant library.
-- Add this generated folder to the assets of your Angular app
-- Pass an extra argument to NgLiveDocsModule.forRoot to indicate the the URL of compodoc assets
+-   Generate the compodoc by running compodoc -p tsconfig.json in your relevant library.
+-   Add this generated folder to the assets of your Angular app
+-   Pass an extra argument to NgLiveDocsModule.forRoot to indicate the the URL of compodoc assets
 
 #### App entry module changes:
-- Import the generated doc jsons into app.module.ts as following
 
-        import componentsDocumentationJson from '../../gen/components-doc.json';
-        import examplesDocumentationJson from '../../gen/examples-doc.json';
-        
-        /**
-         * The following 2 constants are declared for AOT compilation purpose. Otherwise, the compilation would silently fail and
-         * the doc jsons are given as null to the NgLiveDocsModule.
-         * NOTE: The following two has to be exported otherwise the AoT compiler won't see it.
-         */
-        export const docJson1: CompodocSchema = componentsDocumentationJson;
-        export const docJson2: CompodocSchema = examplesDocumentationJson;
+-   Import the generated doc jsons into app.module.ts as following
 
+          import componentsDocumentationJson from '../../gen/components-doc.json';
+          import examplesDocumentationJson from '../../gen/examples-doc.json';
 
-- We use the online IDE Stackblitz to run examples code. Create the Information required for Stackblitz service
+          /**
+           * The following 2 constants are declared for AOT compilation purpose. Otherwise, the compilation would silently fail and
+           * the doc jsons are given as null to the NgLiveDocsModule.
+           * NOTE: The following two has to be exported otherwise the AoT compiler won't see it.
+           */
+          export const docJson1: CompodocSchema = componentsDocumentationJson;
+          export const docJson2: CompodocSchema = examplesDocumentationJson;
 
-        export const sbInfo: StackBlitzInfo = {
-            /** ID of a URL to StackBlitz starter project. This has to be created before running the app. */
-            templateId: 'vcd-ui-cc-starter-template',
-        
-            /** The name of the project displaying examples */
-            projectName: 'VMware Cloud Director UI Components',
-        
-            /**
-             * Finds a module for a component
-             * If this is null or an empty string is returned, the module is not added to the example
-             */
-            moduleFinder?(componentName: string): string;
-        };
+*   We use the online IDE Stackblitz to run examples code. Create the Information required for Stackblitz service
 
-- Recall the asset URL that you hosted the Compodoc at. This URL is relative to the base URL of the Angular app. For example, if we hosted the "compodoc" located at "assets/compodoc" from the assets file in Angular.json, we would provide "compodoc" That will be passed below. 
+          export const sbInfo: StackBlitzInfo = {
+              /** ID of a URL to StackBlitz starter project. This has to be created before running the app. */
+              templateId: 'vcd-ui-cc-starter-template',
 
+              /** The name of the project displaying examples */
+              projectName: 'VMware Cloud Director UI Components',
 
-- Provide the above resources (2 docJsons, sbInfo, assetUrl) to the NgLiveDocs module inside AppModule
+              /**
+               * Finds a module for a component
+               * If this is null or an empty string is returned, the module is not added to the example
+               */
+              moduleFinder?(componentName: string): string;
+          };
 
-        @NgModule({
-            ...
-            imports: [
-                ...
-                NgLiveDocsModule.forRoot([docJson1, docJson2], sbInfo, assetUrl),
-                ...
-            ],
-            ...
-        })
-        export class AppModule {
-        }
+*   Recall the asset URL that you hosted the Compodoc at. This URL is relative to the base URL of the Angular app. For example, if we hosted the "compodoc" located at "assets/compodoc" from the assets file in Angular.json, we would provide "compodoc" That will be passed below.
 
-- Import the <component_name>ExampleModule created in [previous step](#creating-examples-and-their-modules) into AppModule by adding it to list of imports
+-   Provide the above resources (2 docJsons, sbInfo, assetUrl) to the NgLiveDocs module inside AppModule
 
-- Please refer to [example app module](../example-ng-app/src/app/app.module.ts) for this step
+          @NgModule({
+              ...
+              imports: [
+                  ...
+                  NgLiveDocsModule.forRoot([docJson1, docJson2], sbInfo, assetUrl),
+                  ...
+              ],
+              ...
+          })
+          export class AppModule {
+          }
+
+-   Import the <component_name>ExampleModule created in [previous step](#creating-examples-and-their-modules) into AppModule by adding it to list of imports
+
+-   Please refer to [example app module](../example-ng-app/src/app/app.module.ts) for this step
 
 #### Adding examples to the HTML:
 
-- Create a ExampleEntry object as below:
+-   Create a ExampleEntry object as below:
 
-        exampleEntry: ExampleEntry = {
-            component: ApiViewerExampleComponent,
-            forComponent: ApiViewerComponent,
-            title: 'Api viewer'
-          };
+          exampleEntry: ExampleEntry = {
+              component: ApiViewerExampleComponent,
+              title: 'Api viewer'
+            };
 
-- Pass that exampleEntry to the ExampleViewer component in the HTML:
+-   Pass that exampleEntry to the ExampleViewer component in the HTML:
 
-        <vmw-example-viewer [exampleEntry]="exampleEntry"></vmw-example-viewer>
-
+          <vmw-example-viewer [exampleEntry]="exampleEntry"></vmw-example-viewer>
 
 Please refer to [example app](../example-ng-app/src/app) for this step
