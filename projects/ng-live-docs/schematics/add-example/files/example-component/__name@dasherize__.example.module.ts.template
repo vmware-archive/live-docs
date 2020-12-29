@@ -10,7 +10,7 @@ import { <%= name %>ExampleComponent } from './<%= dasherize(name) %>.example.co
 
 @NgModule({
     declarations: [<%= name %>ExampleComponent],
-    imports: [CommonModule, VcdComponentsModule],
+    imports: [CommonModule, <%= classify(moduleName) %> ],
     exports: [<%= name %>ExampleComponent],
     entryComponents: [<%= name %>ExampleComponent],
 })
