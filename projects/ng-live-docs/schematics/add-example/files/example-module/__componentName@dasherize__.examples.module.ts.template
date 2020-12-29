@@ -17,7 +17,6 @@ Documentation.registerDocumentationEntry({
     examples: [
         {
             component: <%= componentName + exampleName %>ExampleComponent,
-            forComponent: null,
             title: '<%= displayName %>',
             urlSegment: '<%= dasherize(componentName) + '-' + dasherize(exampleName) %>',
         },
