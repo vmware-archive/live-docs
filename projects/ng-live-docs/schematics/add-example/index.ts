@@ -62,6 +62,7 @@ function getProject(tree: Tree): experimental.workspace.WorkspaceProject {
 
 /**
  * Return component type from component name. Support component and directive at present.
+ * If a component does not have component or directive as a suffix, it defaults to returning a 'component'
  */
 function getComponentType(component: string): string {
     for (const key in componentTypeMap) {
@@ -69,7 +70,7 @@ function getComponentType(component: string): string {
             return key;
         }
     }
-    throw new SchematicsException('No such component type');
+    return 'component';
 }
 
 /**
@@ -112,7 +113,8 @@ function applyExampleModuleTemplate(
     componentType: string,
     exampleName: string,
     displayName: string,
-    path: string
+    path: string,
+    componentHasSuffix: boolean
 ): Source {
     return apply(url('./files/example-module'), [
         applyTemplates({
@@ -123,6 +125,7 @@ function applyExampleModuleTemplate(
             exampleName,
             componentType,
             displayName,
+            componentHasSuffix,
         }),
         move(normalize(path)),
     ]);
@@ -187,9 +190,7 @@ function addImportStatement(fileName: string, nodes: ts.Node[], imports: ImportD
     });
 
     const insertImportString = imports
-        .filter(
-            (declaration: ImportDeclaration) => !filesSet.has(declaration.fileName)
-        )
+        .filter((declaration: ImportDeclaration) => !filesSet.has(declaration.fileName))
         .map(
             (declaration: ImportDeclaration) => `\nimport { ${declaration.symbolName} } from '${declaration.fileName}';`
         )
@@ -214,7 +215,9 @@ function findArrayNodeByIdentifier(nodes: ts.Node[], identifier: string): ts.Nod
         throw new SchematicsException('Array not found');
     }
 
-    const listNode = arrayLiteralExpression.getChildren().find((node: ts.Node) => node.kind === ts.SyntaxKind.SyntaxList);
+    const listNode = arrayLiteralExpression
+        .getChildren()
+        .find((node: ts.Node) => node.kind === ts.SyntaxKind.SyntaxList);
     if (!listNode) {
         throw new SchematicsException('Examples array content not found');
     }
@@ -431,7 +434,9 @@ export function addExample(options: ExampleSchema): Rule {
         const project = getProject(tree);
         const componentType = getComponentType(options.componentName);
 
-        const componentName = strings.classify(options.componentName).replace(/(Component|Directive)$/, '');
+        const hasSuffixRegex = /(Component|Directive)$/;
+
+        const componentName = strings.classify(options.componentName).replace(hasSuffixRegex, '');
         const exampleName = componentName + strings.classify(options.exampleName);
         const finalRules: Rule[] = [];
 
@@ -457,12 +462,16 @@ export function addExample(options: ExampleSchema): Rule {
             const exampleImportList: ImportDeclaration[] = [
                 {
                     symbolName: `${exampleName}ExampleComponent`,
-                    fileName: `./${strings.dasherize(options.exampleName)}/${strings.dasherize(exampleName)}.example.component`
+                    fileName: `./${strings.dasherize(options.exampleName)}/${strings.dasherize(
+                        exampleName
+                    )}.example.component`,
                 },
                 {
                     symbolName: `${exampleName}ExampleModule`,
-                    fileName: `./${strings.dasherize(options.exampleName)}/${strings.dasherize(exampleName)}.example.module`
-                }
+                    fileName: `./${strings.dasherize(options.exampleName)}/${strings.dasherize(
+                        exampleName
+                    )}.example.module`,
+                },
             ];
             finalRules.push(
                 updateExistingModuleRule(
@@ -483,7 +492,8 @@ export function addExample(options: ExampleSchema): Rule {
                         componentType,
                         strings.classify(options.exampleName),
                         options.displayName,
-                        exampleRootDir
+                        exampleRootDir,
+                        hasSuffixRegex.test(options.componentName)
                     )
                 )
             );

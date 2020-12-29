@@ -5,13 +5,13 @@
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { <%= componentName + classify(componentType) %> } from '<%= packageName %>';
+import { <%= componentName + ( componentHasSuffix ? classify(componentType) : '')  %> } from '<%= packageName %>';
 import { Documentation } from '@vmw/ng-live-docs';
 import { <%= componentName + exampleName %>ExampleComponent } from './<%= dasherize(exampleName) %>/<%= dasherize(componentName) + '-' + dasherize(exampleName) %>.example.component';
 import { <%= componentName + exampleName %>ExampleModule } from './<%= dasherize(exampleName) %>/<%= dasherize(componentName) + '-' + dasherize(exampleName) %>.example.module';
 
 Documentation.registerDocumentationEntry({
-    component: <%= componentName + classify(componentType) %>,
+    component: <%= componentName + ( componentHasSuffix ? classify(componentType) : '') %>,
     displayName: '<%= insertWhiteSpace(componentName) %>',
     urlSegment: '<%= camelize(componentName) %>',
     examples: [
