@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-import {Component, Inject, Input, Type} from '@angular/core';
-import {ApiParameters, DocumentationRetrieverService} from '../documentation-retriever.service';
+import { Component, Inject, Input, Type } from '@angular/core';
+import { ApiParameters, DocumentationRetrieverService } from '../documentation-retriever.service';
 import { COMPODOC_URL } from '../ng-live-docs.module';
 
 @Component({
@@ -18,8 +18,8 @@ export class ApiViewerComponent {
 
     constructor(
         private documentationRetriever: DocumentationRetrieverService,
-        @Inject(COMPODOC_URL) public compodocUrl: string,
-        ) {}
+        @Inject(COMPODOC_URL) public compodocUrl: string
+    ) {}
 
     /**
      * Gets the input and output parameters from the Compodoc generated documentation json
