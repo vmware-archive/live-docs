@@ -8,7 +8,7 @@ import { CompoDocRetrieverService } from './compodoc/compodoc-retriever.service'
 import { CompodocSchema } from './compodoc/compodoc-schema';
 import { DocumentationContainerModule } from './documentation-container/documentation-container.module';
 import { DocumentationRetrieverService } from './documentation-retriever.service';
-import { STACKBLITZ_INFO, StackBlitzInfo, StackBlitzWriterService } from './stack-blitz-writer.service';
+import { StackBlitzInfo, StackBlitzWriterService, STACKBLITZ_INFO } from './stack-blitz-writer.service';
 
 const declarations = [];
 
@@ -49,15 +49,18 @@ export function getStackBlitzWriter(
 @NgModule({
     imports: [DocumentationContainerModule],
     declarations: [...declarations],
-    exports: [...declarations, DocumentationContainerModule]
+    exports: [...declarations, DocumentationContainerModule],
 })
 export class NgLiveDocsModule {
     /**
      * Called in the host package importing this doc library for providing the documentation JSONs needed for
      * {@link CompoDocRetrieverService}
      */
-    public static forRoot(documentations: CompodocSchema[], stackblitzData: StackBlitzInfo, compodocUrl?: string)
-        : ModuleWithProviders<NgLiveDocsModule> {
+    public static forRoot(
+        documentations: CompodocSchema[],
+        stackblitzData: StackBlitzInfo,
+        compodocUrl?: string
+    ): ModuleWithProviders<NgLiveDocsModule> {
         return {
             ngModule: NgLiveDocsModule,
             providers: [
@@ -82,8 +85,8 @@ export class NgLiveDocsModule {
                 },
                 {
                     provide: COMPODOC_URL,
-                    useValue: compodocUrl
-                }
+                    useValue: compodocUrl,
+                },
             ],
         };
     }
