@@ -20,7 +20,8 @@
     "rbradford-compodoc": "1.1.11",
     "@stackblitz/sdk": "1.3.0",
     "@vmw/plain-js-live-docs": "0.0.2",
-    "schematics-utilities": "2.0.2"
+    "schematics-utilities": "2.0.2",
+    "tslib": "^2.0.0"
   },
   "schematics": "./schematics/collection.json"
 }
