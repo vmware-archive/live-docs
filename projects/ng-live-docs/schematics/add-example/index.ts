@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-import { experimental, normalize, strings } from '@angular-devkit/core';
+import { normalize, strings } from '@angular-devkit/core';
 import {
     apply,
     applyTemplates,
@@ -17,7 +17,14 @@ import {
     Tree,
     url,
 } from '@angular-devkit/schematics';
-import { Change, getSourceNodes, InsertChange, NoopChange } from 'schematics-utilities';
+import {
+    Change,
+    getSourceNodes,
+    InsertChange,
+    NoopChange,
+    WorkspaceProject,
+    WorkspaceSchema,
+} from 'schematics-utilities';
 import * as ts from 'typescript';
 import { Schema as ExampleSchema } from './schema';
 
@@ -51,12 +58,12 @@ function insertWhiteSpace(str: string): string {
 /**
  * Get default project config from angular.json
  */
-function getProject(tree: Tree): experimental.workspace.WorkspaceProject {
+function getProject(tree: Tree): WorkspaceProject {
     const workspaceConfig = tree.read('/angular.json');
     if (!workspaceConfig) {
         throw new SchematicsException('Angular workspace not found');
     }
-    const workspace: experimental.workspace.WorkspaceSchema = JSON.parse(workspaceConfig.toString('utf-8'));
+    const workspace: WorkspaceSchema = JSON.parse(workspaceConfig.toString('utf-8'));
     return workspace.projects[workspace.defaultProject as string];
 }
 
