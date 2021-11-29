@@ -5,7 +5,13 @@
 
 import { Type } from '@angular/core';
 import { ApiParameters, DocumentationRetrieverService } from '../documentation-retriever.service';
-import { CompodocComponent, CompodocModule, CompodocSchema, GenericCompodocItem, RawGenericCompodocItem } from './compodoc-schema';
+import {
+    CompodocComponent,
+    CompodocModule,
+    CompodocSchema,
+    GenericCompodocItem,
+    RawGenericCompodocItem,
+} from './compodoc-schema';
 
 const TOP_LEVEL_TYPES = ['classes', 'injectables', 'interfaces', 'modules', 'components', 'directives'];
 const MISCELLANEOUS_LEVEL_TYPES = ['variables', 'functions', 'typealiases', 'enumerations'];
@@ -70,7 +76,7 @@ export class CompoDocRetrieverService implements DocumentationRetrieverService {
      * Adds the correct type link to each parameter if it can be found/
      */
     private addTypeLink(params: ApiParameters[]): ApiParameters[] {
-        return params ? params.map(p => ({...p, typeLink: this.getTypeLink(p.type)})) : [];
+        return params ? params.map(p => ({ ...p, typeLink: this.getTypeLink(p.type) })) : [];
     }
 
     /**
@@ -81,7 +87,7 @@ export class CompoDocRetrieverService implements DocumentationRetrieverService {
      */
     private getTypeLink(type: string): string {
         const rawType = type.split('[')[0].split('<')[0];
-        const found = this.traverseDocumentation((item) => item.name === rawType);
+        const found = this.traverseDocumentation(item => item.name === rawType);
         if (!found) {
             return '';
         }
@@ -99,15 +105,17 @@ export class CompoDocRetrieverService implements DocumentationRetrieverService {
             // Check every documentation type in the given documentation
 
             for (const itemType of TOP_LEVEL_TYPES) {
-                const found = (documentationJson[itemType] as GenericCompodocItem[]).find((item) => callback(item));
+                const found = (documentationJson[itemType] as GenericCompodocItem[]).find(item => callback(item));
                 if (found) {
-                    return {...found, itemType};
+                    return { ...found, itemType };
                 }
             }
             for (const itemType of MISCELLANEOUS_LEVEL_TYPES) {
-                const found = (documentationJson.miscellaneous[itemType] as GenericCompodocItem[]).find((item) => callback(item));
+                const found = (documentationJson.miscellaneous[itemType] as GenericCompodocItem[]).find(item =>
+                    callback(item)
+                );
                 if (found) {
-                    return {...found, itemType};
+                    return { ...found, itemType };
                 }
             }
         }
@@ -123,6 +131,6 @@ interface TraverseCompodocItemsCallback {
      * @return undefined or null if the traversal should continue, otherwise the returned object will be
      * returned to the traverse caller.
      */
-    // tslint:disable-next-line: callable-types
+    // eslint-disable-next-line @typescript-eslint/prefer-function-type
     (item: RawGenericCompodocItem): boolean;
 }
