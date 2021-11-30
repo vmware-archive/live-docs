@@ -9,18 +9,20 @@
     "postbuild": "npm run copy:schemas && npm run copy:files && npm run copy:collection"
   },
   "peerDependencies": {
-    "@angular/common": "9.1.9",
-    "@angular/core": "9.1.9",
-    "@angular/platform-browser": "9.1.9",
-    "@clr/angular": "^3",
-    "@clr/ui": "^3",
-    "@clr/icons": "^3"
+    "@angular/common": "~11",
+    "@angular/core": "~11",
+    "@angular/platform-browser": "^11",
+    "@clr/ui": "^5",
+    "@clr/icons": "^5",
+    "@clr/angular": "^5",
+    "@cds/core": "^5"
   },
   "dependencies": {
     "rbradford-compodoc": "1.1.11",
     "@stackblitz/sdk": "1.3.0",
-    "@vmw/plain-js-live-docs": "0.0.2",
-    "schematics-utilities": "2.0.2"
+    "@vmw/plain-js-live-docs": "0.0.3",
+    "schematics-utilities": "2.0.2",
+    "tslib": "^2.0.0"
   },
   "schematics": "./schematics/collection.json"
 }

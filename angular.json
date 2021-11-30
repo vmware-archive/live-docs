@@ -10,7 +10,7 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/plain-js-live-docs/tsconfig.lib.json",
             "project": "projects/plain-js-live-docs/ng-package.json"
@@ -25,14 +25,11 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/plain-js-live-docs/tsconfig.lib.json",
-              "projects/plain-js-live-docs/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/plain-js-live-docs/**/*.ts",
+              "projects/plain-js-live-docs/**/*.html"
             ]
           }
         }
@@ -45,7 +42,7 @@
       "prefix": "vmw",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/ng-live-docs/tsconfig.lib.json",
             "project": "projects/ng-live-docs/ng-package.json"
@@ -60,14 +57,11 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/ng-live-docs/tsconfig.lib.json",
-              "projects/ng-live-docs/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/ng-live-docs/**/*.ts",
+              "projects/ng-live-docs/**/*.html"
             ]
           }
         }
@@ -119,7 +113,6 @@
               "optimization": false,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -127,8 +120,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "10mb",
+                  "maximumError": "20mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -174,15 +167,11 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/example-ng-app/tsconfig.app.json",
-              "projects/example-ng-app/tsconfig.spec.json",
-              "projects/example-ng-app/e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/example-ng-app/**/*.ts",
+              "projects/example-ng-app/**/*.html"
             ]
           }
         },

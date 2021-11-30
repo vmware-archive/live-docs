@@ -1,9 +1,13 @@
 {
   "name": "@vmw/plain-js-live-docs",
-  "version": "0.0.2",
+  "version": "0.0.3",
+  "dependencies": {
+    "tslib": "^2.0.0"
+  },
   "peerDependencies": {
-    "@clr/ui": "^3",
-    "@clr/icons": "^3",
+    "@clr/ui": "^5",
+    "@clr/icons": "^5",
+    "@cds/core": "^5",
     "lit-html": "1.1.2",
     "prismjs": "1.17.1"
   }
