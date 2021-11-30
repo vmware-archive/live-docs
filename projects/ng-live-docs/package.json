@@ -1,6 +1,6 @@
 {
   "name": "@vmw/ng-live-docs",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "scripts": {
     "build": "../../node_modules/.bin/tsc -p tsconfig.schematics.json",
     "copy:schemas": "rsync -Rr schematics/*/schema.json ../../dist/ng-live-docs/",
