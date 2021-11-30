@@ -8,67 +8,117 @@ on:
         types: [opened, reopened, synchronize]
 
 jobs:
+    npm-ci:
+        name: Install and cache node_modules
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Create npm_modules cache
+              uses: actions/cache@v2
+              with:
+                  path: ./node_modules
+                  key: npm-${{ github.sha }}
+
+            - run: npm ci --ignore-scripts;
+
     lint-projects:
         runs-on: ubuntu-latest
         name: Linting
+        needs: [npm-ci]
         steps:
             - uses: actions/checkout@v2
-            - run: |
-                  npm ci
-                  npm run lint
+
+            - name: Read npm_modules cache
+              uses: actions/cache@v2
+              with:
+                  path: ./node_modules
+                  key: npm-${{ github.sha }}
+
+            - run: npm run lint
 
     build-plain-js-live-docs:
         runs-on: ubuntu-latest
         name: Build /plain-js-live-docs
-        needs: [lint-projects]
+        needs: [npm-ci]
         steps:
             - uses: actions/checkout@v2
-            - uses: actions/cache@v1
+
+            - name: Cache node_modules
+              uses: actions/cache@v2
+              with:
+                  path: ./node_modules
+                  key: npm-${{ github.sha }}
+
+            - name: Store plain-js-live-docs output
+              uses: actions/cache@v1
               with:
                   path: ./dist/plain-js-live-docs
                   key: ${{github.sha}}-plain-js-live-docs
+
             - run: |
-                  npm ci
                   npm run build:plainjs
 
     build-ng-live-docs:
         runs-on: ubuntu-latest
         name: Build /ng-live-docs
-        needs: [lint-projects, build-plain-js-live-docs]
+        needs: [npm-ci, build-plain-js-live-docs]
         steps:
             - uses: actions/checkout@v2
-            - uses: actions/cache@v1
+
+            - name: Read npm_modules cache
+              uses: actions/cache@v2
               with:
-                path: ./dist/plain-js-live-docs
-                key: ${{github.sha}}-plain-js-live-docs
-            - uses: actions/cache@v1
+                  path: ./node_modules
+                  key: npm-${{ github.sha }}
+
+            - name: Read plain-js-live-docs output
+              uses: actions/cache@v1
               with:
-                path: ./dist/ng-live-docs
-                key: ${{github.sha}}-ng-live-docs
-            - run: |
-                  npm ci
-                  npm run build:ng-live-docs
+                  path: ./dist/plain-js-live-docs
+                  key: ${{github.sha}}-plain-js-live-docs
+
+            - name: Store ng-live-docs output
+              uses: actions/cache@v1
+              with:
+                  path: ./dist/ng-live-docs
+                  key: ${{github.sha}}-ng-live-docs
+
+            - name: build
+              run: npm run build:ng-live-docs
 
     build-example-ng-app:
         runs-on: ubuntu-latest
         name: Build /example-ng-app
-        needs: [build-ng-live-docs]
+        needs: [npm-ci, build-plain-js-live-docs, build-ng-live-docs]
         steps:
             - uses: actions/checkout@v2
-            - uses: actions/cache@v1
+
+            - name: Read npm_modules cache
+              uses: actions/cache@v2
+              with:
+                  path: ./node_modules
+                  key: npm-${{ github.sha }}
+
+            - name: Read plain-js-live-docs cache
+              uses: actions/cache@v1
               with:
                   path: ./dist/plain-js-live-docs
                   key: ${{github.sha}}-plain-js-live-docs
-            - uses: actions/cache@v1
+
+            - name: Read ng-live-docs cache
+              uses: actions/cache@v1
               with:
                   path: ./dist/ng-live-docs
                   key: ${{github.sha}}-ng-live-docs
-            - uses: actions/cache@v1
+
+            - name: Store example-ng-app output
+              uses: actions/cache@v1
               with:
                   path: ./dist/example-ng-app
                   key: ${{github.sha}}-example-ng-app
+
             - run: |
-                  npm ci
                   npm run build-live-docs-doc
                   npm run build-examples-doc
                   npm run build:example-ng-app-prod
@@ -76,131 +126,124 @@ jobs:
     unit-testing:
         runs-on: ubuntu-latest
         name: Unit tests
-        needs: [build-ng-live-docs]
+        needs: [npm-ci, build-plain-js-live-docs]
         steps:
             - uses: actions/checkout@v2
-            - uses: actions/cache@v1
+
+            - name: Read npm_modules cache
+              uses: actions/cache@v2
               with:
-                  path: ./coverage
-                  key: coverage
-            - uses: actions/cache@v1
+                  path: ./node_modules
+                  key: npm-${{ github.sha }}
+
+            - name: Read plain-js-live-docs cache
+              uses: actions/cache@v1
               with:
                   path: ./dist/plain-js-live-docs
                   key: ${{github.sha}}-plain-js-live-docs
+
             - uses: actions/cache@v1
               with:
-                path: ./dist/ng-live-docs
-                key: ${{github.sha}}-ng-live-docs
+                  path: ./dist/ng-live-docs
+                  key: ${{github.sha}}-ng-live-docs
+
             - name: Run unit-tests
-              run: |
-                  npm ci
-                  npm run test:ci:ng-live-docs
+              run: npm run test:ci:ng-live-docs
+
             - name: Upload coverage to Codecov
               if: success()
               uses: codecov/codecov-action@v1
 
-    gh-pages-deploy:
-        runs-on: ubuntu-latest
-        name: Deploying to Github pages
-        needs: [build-example-ng-app, unit-testing]
-        steps:
-            - uses: actions/checkout@v2
-            - uses: actions/cache@v1
-              with:
-                  path: ./dist/example-ng-app
-                  key: ${{github.sha}}-example-ng-app
-            - run: |
-                  npm ci
-                  npx ng deploy --no-build
-              if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-              env:
-                  GH_TOKEN: ${{ secrets.GH_TOKEN }}
-
     publish-plain-js-live-docs:
-        needs: [build-plain-js-live-docs, build-example-ng-app, unit-testing]
+        needs: [build-plain-js-live-docs, unit-testing]
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
-              # Fetch depth is given as input because by default, it does a shallow clone (one without any history) for performance reasons.
-              # But the check-<lib-name>-package step below uses git diff-tree command to get list of files changed and
-              # it requires a base commit sha in addition to the commit sha that triggered this job.
+
+            - name: Read npm_modules cache
+              uses: actions/cache@v2
               with:
-                  fetch-depth: 2
-            - uses: actions/setup-node@v1
-              with:
-                  node-version: '13'
-                  registry-url: https://registry.npmjs.org/
-            - uses: actions/cache@v1
+                  path: ./node_modules
+                  key: npm-${{ github.sha }}
+
+            - name: Read plain-js-live-docs cache
+              uses: actions/cache@v1
               with:
                   path: ./dist/plain-js-live-docs
                   key: ${{github.sha}}-plain-js-live-docs
-            - name: Install node_modules
-              run: npm ci
-            - id: check-plain-js-live-docs-tag
-              uses: ./.github/actions/check-lib-tag
+
+            - name: Check if package.json changed
+              id: check-version
+              uses: EndBug/version-check@v2
               with:
-                  lib-name: 'plain-js-live-docs'
-            - id: check-plain-js-live-docs-package
-              uses: ./.github/actions/check-lib-package
-              with:
-                  lib-name: 'plain-js-live-docs'
+                  diff-search: true
+                  file-name: ./projects/plain-js-live-docs/package.json
+
             - name: Publish plain-js-live-docs@next
-              if: steps.check-plain-js-live-docs-tag.outputs.isLibTag != 'true' && steps.check-plain-js-live-docs-package.outputs.isLibPackageChanged == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/master'
+              if: steps.check-version.outputs.changed == 'true'
+                  && endsWith(steps.check-version.outputs.version, 'next')
+                  && github.event_name == 'push'
+                  && github.ref == 'refs/heads/master'
               run: |
-                  npm ci
                   cd ./dist/plain-js-live-docs
-                  npm publish --tag next --access public
+                  echo npm publish --tag next --access public
               env:
                   NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+
             - name: Publish plain-js-live-docs@latest
-              if: steps.check-plain-js-live-docs-tag.outputs.isLibTag == 'true'
+              if: steps.check-version.outputs.changed == 'true'
+                  && !endsWith(steps.check-version.outputs.version, 'next')
+                  && github.event_name == 'push'
+                  && github.ref == 'refs/heads/master'
               run: |
-                  npm ci
                   cd ./dist/plain-js-live-docs
-                  npm publish
+                  echo npm publish
               env:
                   NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
     publish-ng-live-docs:
-      needs: [build-ng-live-docs, build-example-ng-app, unit-testing]
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v2
-          # Fetch depth is given as input because by default, it does a shallow clone (one without any history) for performance reasons.
-          # But the check-<lib-name>-package step below uses git diff-tree command to get list of files changed and
-          # it requires a base commit sha in addition to the commit sha that triggered this job.
-          with:
-            fetch-depth: 2
-        - uses: actions/setup-node@v1
-          with:
-            node-version: '13'
-            registry-url: https://registry.npmjs.org/
-        - uses: actions/cache@v1
-          with:
-            path: ./dist/ng-live-docs
-            key: ${{github.sha}}-ng-live-docs
-        - name: Install node_modules
-          run: npm ci
-        - id: check-ng-live-docs-tag
-          uses: ./.github/actions/check-lib-tag
-          with:
-            lib-name: 'ng-live-docs'
-        - id: check-ng-live-docs-package
-          uses: ./.github/actions/check-lib-package
-          with:
-            lib-name: 'ng-live-docs'
-        - name: Publish ng-live-docs@next
-          if: steps.check-ng-live-docs-tag.outputs.isLibTag != 'true' && steps.check-ng-live-docs-package.outputs.isLibPackageChanged == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/master'
-          run: |
-            cd ./dist/ng-live-docs
-            npm publish --tag next --access public
-          env:
-            NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-        - name: Publish ng-live-docs@latest
-          if: steps.check-ng-live-docs-tag.outputs.isLibTag == 'true'
-          run: |
-            cd ./dist/ng-live-docs
-            npm publish
-          env:
-            NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+        needs: [build-ng-live-docs, unit-testing]
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
 
+            - name: Read npm_modules cache
+              uses: actions/cache@v2
+              with:
+                  path: ./node_modules
+                  key: npm-${{ github.sha }}
+
+            - name: Read ng-live-docs cache
+              uses: actions/cache@v1
+              with:
+                  path: ./dist/ng-live-docs
+                  key: ${{github.sha}}-ng-live-docs
+
+            - name: Check if package.json changed
+              id: check-version
+              uses: EndBug/version-check@v2
+              with:
+                  diff-search: true
+                  file-name: ./projects/ng-live-docs/package.json
+
+            - name: Publish ng-live-docs@next
+              if: steps.check-version.outputs.changed == 'true'
+                  && endsWith(steps.check-version.outputs.version, 'next')
+                  && github.event_name == 'push'
+                  && github.ref == 'refs/heads/master'
+              run: |
+                  cd ./dist/ng-live-docs
+                  echo npm publish --tag next --access public
+              env:
+                  NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+
+            - name: Publish ng-live-docs@latest
+              if: steps.check-version.outputs.changed == 'true'
+                  && !endsWith(steps.check-version.outputs.version, 'next')
+                  && github.event_name == 'push'
+                  && github.ref == 'refs/heads/master'
+              run: |
+                  cd ./dist/ng-live-docs
+                  echo npm publish
+              env:
+                  NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
