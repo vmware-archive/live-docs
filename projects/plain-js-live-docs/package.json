@@ -1,6 +1,6 @@
 {
   "name": "@vmw/plain-js-live-docs",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "peerDependencies": {
     "@clr/ui": "^5",
     "@clr/icons": "^5",
