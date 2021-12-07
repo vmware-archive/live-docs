@@ -51,7 +51,7 @@ jobs:
                   key: npm-${{ github.sha }}
 
             - name: Store plain-js-live-docs output
-              uses: actions/cache@v1
+              uses: actions/cache@v2
               with:
                   path: ./dist/plain-js-live-docs
                   key: ${{github.sha}}-plain-js-live-docs
@@ -73,13 +73,13 @@ jobs:
                   key: npm-${{ github.sha }}
 
             - name: Read plain-js-live-docs output
-              uses: actions/cache@v1
+              uses: actions/cache@v2
               with:
                   path: ./dist/plain-js-live-docs
                   key: ${{github.sha}}-plain-js-live-docs
 
             - name: Store ng-live-docs output
-              uses: actions/cache@v1
+              uses: actions/cache@v2
               with:
                   path: ./dist/ng-live-docs
                   key: ${{github.sha}}-ng-live-docs
@@ -101,19 +101,19 @@ jobs:
                   key: npm-${{ github.sha }}
 
             - name: Read plain-js-live-docs cache
-              uses: actions/cache@v1
+              uses: actions/cache@v2
               with:
                   path: ./dist/plain-js-live-docs
                   key: ${{github.sha}}-plain-js-live-docs
 
             - name: Read ng-live-docs cache
-              uses: actions/cache@v1
+              uses: actions/cache@v2
               with:
                   path: ./dist/ng-live-docs
                   key: ${{github.sha}}-ng-live-docs
 
             - name: Store example-ng-app output
-              uses: actions/cache@v1
+              uses: actions/cache@v2
               with:
                   path: ./dist/example-ng-app
                   key: ${{github.sha}}-example-ng-app
@@ -137,12 +137,12 @@ jobs:
                   key: npm-${{ github.sha }}
 
             - name: Read plain-js-live-docs cache
-              uses: actions/cache@v1
+              uses: actions/cache@v2
               with:
                   path: ./dist/plain-js-live-docs
                   key: ${{github.sha}}-plain-js-live-docs
 
-            - uses: actions/cache@v1
+            - uses: actions/cache@v2
               with:
                   path: ./dist/ng-live-docs
                   key: ${{github.sha}}-ng-live-docs
@@ -160,6 +160,13 @@ jobs:
         steps:
             - uses: actions/checkout@v2
 
+            # Default registry is github's internal npm registry
+            - name: Setup Node registry
+              uses: actions/setup-node@v1
+              with:
+                  node-version: '13'
+                  registry-url: https://registry.npmjs.org/
+
             - name: Read npm_modules cache
               uses: actions/cache@v2
               with:
@@ -167,7 +174,7 @@ jobs:
                   key: npm-${{ github.sha }}
 
             - name: Read plain-js-live-docs cache
-              uses: actions/cache@v1
+              uses: actions/cache@v2
               with:
                   path: ./dist/plain-js-live-docs
                   key: ${{github.sha}}-plain-js-live-docs
@@ -186,7 +193,7 @@ jobs:
                   && github.ref == 'refs/heads/master'
               run: |
                   cd ./dist/plain-js-live-docs
-                  echo npm publish --tag next --access public
+                  npm publish --tag next --access public
               env:
                   NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
@@ -197,7 +204,7 @@ jobs:
                   && github.ref == 'refs/heads/master'
               run: |
                   cd ./dist/plain-js-live-docs
-                  echo npm publish
+                  npm publish
               env:
                   NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
@@ -207,6 +214,13 @@ jobs:
         steps:
             - uses: actions/checkout@v2
 
+            # Default registry is github's internal npm registry
+            - name: Setup Node registry
+              uses: actions/setup-node@v1
+              with:
+                  node-version: '13'
+                  registry-url: https://registry.npmjs.org/
+
             - name: Read npm_modules cache
               uses: actions/cache@v2
               with:
@@ -214,7 +228,7 @@ jobs:
                   key: npm-${{ github.sha }}
 
             - name: Read ng-live-docs cache
-              uses: actions/cache@v1
+              uses: actions/cache@v2
               with:
                   path: ./dist/ng-live-docs
                   key: ${{github.sha}}-ng-live-docs
@@ -233,7 +247,7 @@ jobs:
                   && github.ref == 'refs/heads/master'
               run: |
                   cd ./dist/ng-live-docs
-                  echo npm publish --tag next --access public
+                  npm publish --tag next --access public
               env:
                   NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
@@ -244,6 +258,6 @@ jobs:
                   && github.ref == 'refs/heads/master'
               run: |
                   cd ./dist/ng-live-docs
-                  echo npm publish
+                  npm publish
               env:
                   NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
