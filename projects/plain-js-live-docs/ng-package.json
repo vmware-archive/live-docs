@@ -3,9 +3,5 @@
   "dest": "../../dist/plain-js-live-docs",
   "lib": {
     "entryFile": "src/public-api.ts"
-  },
-  "whitelistedNonPeerDependencies": [
-    "lit-html",
-    "prismjs"
-  ]
+  }
 }
