@@ -6,7 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
-## [0.0.4]
+## [0.0.5]
+
+Upgraded to Angular 11 / Clarity 5
 
 ### Changed
 
