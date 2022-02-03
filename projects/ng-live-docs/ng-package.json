@@ -4,10 +4,11 @@
   "lib": {
     "entryFile": "src/public-api.ts"
   },
-  "whitelistedNonPeerDependencies": [
+  "allowedNonPeerDependencies": [
     "rbradford-compodoc",
     "@stackblitz/sdk",
     "@vmw/plain-js-live-docs",
-    "schematics-utilities"
+    "schematics-utilities",
+    "cross-spawn"
   ]
 }

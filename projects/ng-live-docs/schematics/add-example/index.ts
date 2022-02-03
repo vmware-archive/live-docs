@@ -253,7 +253,6 @@ function findArrayNodeByIdentifier(nodes: ts.Node[], identifier: string): ts.Nod
  *          ...,
  *          {
  *              component: ComponentNameExampleComponent,
- *              forComponent: null,
  *              title: 'displayName',
  *              urlSegment: 'component-name'
  *          }
@@ -266,7 +265,6 @@ function addDocumentationEntry(fileName: string, nodes: ts.Node[], componentName
     const insertExample = `${currentExamples.endsWith(',') ? '' : ','}
         {
             component: ${componentName}ExampleComponent,
-            forComponent: null,
             title: '${displayName}',
             urlSegment: '${strings.dasherize(componentName)}',
         },`;
@@ -355,7 +353,6 @@ function addModuleImports(fileName: string, nodes: ts.Node[], moduleName: string
  *          ...,
  *          {
  *              component: ComponentNameExampleComponent,
- *              forComponent: null,
  *              title: 'displayName',
  *              urlSegment: 'component-name'
  *          }

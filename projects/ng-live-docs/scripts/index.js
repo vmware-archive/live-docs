@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const spawnSync = require('child_process').spawnSync;
+const spawn = require('cross-spawn');
 const fs = require('fs');
 
 // ARGS
@@ -10,16 +10,13 @@ const outputFile = process.argv[4];
 const UTF8 = 'utf8';
 const compodocTempFile = './documentation/documentation.json';
 
-// Run compodoc in with the passed in config, find the bin folder so we can execute other node scripts
-const npmBin = spawnSync('npm', ['bin'])
-    .stdout.toString()
-    .replace('\n', '');
-const compodoc = spawnSync('node', [`${npmBin}/compodoc`, '-p', `${process.cwd()}/${tsConfigFile}`, '-e', 'json']);
+// Run compodoc in with the passed in config
+const compodoc = spawn.sync('compodoc', ['-p', `${tsConfigFile}`, '-e', 'json']);
 outputFromExec(compodoc, 'compodoc');
 const compodocData = JSON.parse(fs.readFileSync(compodocTempFile, UTF8));
 
 // Run create-module-data on the entry point
-const moduleDataExec = spawnSync('node', [`${__dirname}/create-module-data`, entryPoint]);
+const moduleDataExec = spawn.sync('node', [`${__dirname}/create-module-data`, entryPoint]);
 outputFromExec(moduleDataExec, 'create-modules');
 const modulesData = JSON.parse(moduleDataExec.stdout.toString());
 
