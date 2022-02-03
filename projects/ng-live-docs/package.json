@@ -1,13 +1,6 @@
 {
   "name": "@vmw/ng-live-docs",
   "version": "0.0.13",
-  "scripts": {
-    "build": "../../node_modules/.bin/tsc -p tsconfig.schematics.json",
-    "copy:schemas": "rsync -Rr schematics/*/schema.json ../../dist/ng-live-docs/",
-    "copy:files": "rsync -Rr -p schematics/*/files/** ../../dist/ng-live-docs/",
-    "copy:collection": "cp schematics/collection.json ../../dist/ng-live-docs/schematics/collection.json",
-    "postbuild": "npm run copy:schemas && npm run copy:files && npm run copy:collection"
-  },
   "peerDependencies": {
     "@angular/common": "~11",
     "@angular/core": "~11",
@@ -21,7 +14,8 @@
     "rbradford-compodoc": "1.1.11",
     "@stackblitz/sdk": "^1.3",
     "@vmw/plain-js-live-docs": "^0.0.5",
-    "schematics-utilities": "^2"
+    "schematics-utilities": "^2",
+    "cross-spawn": "^7.0.3"
   },
   "schematics": "./schematics/collection.json"
 }
