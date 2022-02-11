@@ -150,7 +150,10 @@ jobs:
               uses: codecov/codecov-action@v1
 
     publish-plain-js-live-docs:
-        needs: [build-plain-js-live-docs, unit-testing]
+        if: contains(github.event.head_commit.message, '[publish @vmw/plain-js-live-docs')
+            && github.event_name == 'push'
+            && github.ref == 'refs/heads/master'
+        needs: [build-plain-js-live-docs]
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
@@ -174,18 +177,8 @@ jobs:
                   path: ./dist/plain-js-live-docs
                   key: ${{github.sha}}-plain-js-live-docs
 
-            - name: Check if package.json changed
-              id: check-version
-              uses: EndBug/version-check@v2
-              with:
-                  diff-search: true
-                  file-name: ./projects/plain-js-live-docs/package.json
-
             - name: Publish plain-js-live-docs@next
-              if: steps.check-version.outputs.changed == 'true'
-                  && endsWith(steps.check-version.outputs.version, 'next')
-                  && github.event_name == 'push'
-                  && github.ref == 'refs/heads/master'
+              if: contains(github.event.head_commit.message, '[publish @vmw/plain-js-live-docs]')
               run: |
                   cd ./dist/plain-js-live-docs
                   npm publish --tag next --access public
@@ -193,10 +186,7 @@ jobs:
                   NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
             - name: Publish plain-js-live-docs@latest
-              if: steps.check-version.outputs.changed == 'true'
-                  && !endsWith(steps.check-version.outputs.version, 'next')
-                  && github.event_name == 'push'
-                  && github.ref == 'refs/heads/master'
+              if: contains(github.event.head_commit.message, '[publish @vmw/plain-js-live-docs@latest]')
               run: |
                   cd ./dist/plain-js-live-docs
                   npm publish
@@ -204,6 +194,9 @@ jobs:
                   NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
     publish-ng-live-docs:
+        if: contains(github.event.head_commit.message, '[publish @vmw/ng-live-docs')
+            && github.event_name == 'push'
+            && github.ref == 'refs/heads/master'
         needs: [build-ng-live-docs, unit-testing]
         runs-on: ubuntu-latest
         steps:
@@ -228,18 +221,8 @@ jobs:
                   path: ./dist/ng-live-docs
                   key: ${{github.sha}}-ng-live-docs
 
-            - name: Check if package.json changed
-              id: check-version
-              uses: EndBug/version-check@v2
-              with:
-                  diff-search: true
-                  file-name: ./projects/ng-live-docs/package.json
-
             - name: Publish ng-live-docs@next
-              if: steps.check-version.outputs.changed == 'true'
-                  && endsWith(steps.check-version.outputs.version, 'next')
-                  && github.event_name == 'push'
-                  && github.ref == 'refs/heads/master'
+              if: contains(github.event.head_commit.message, '[publish @vmw/ng-live-docs]')
               run: |
                   cd ./dist/ng-live-docs
                   npm publish --tag next --access public
@@ -247,10 +230,7 @@ jobs:
                   NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
             - name: Publish ng-live-docs@latest
-              if: steps.check-version.outputs.changed == 'true'
-                  && !endsWith(steps.check-version.outputs.version, 'next')
-                  && github.event_name == 'push'
-                  && github.ref == 'refs/heads/master'
+              if: contains(github.event.head_commit.message, '[publish @vmw/ng-live-docs@latest]')
               run: |
                   cd ./dist/ng-live-docs
                   npm publish
