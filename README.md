@@ -45,13 +45,21 @@ of a WidgetObject pattern to minimize duplication of code accessing HTML in test
 
 ## Publishing
 
--   Make a change to [projects/ng-live-docs/package.json](./projects/ng-live-docs/package.json) or
-    [projects/plain-js-live-docs/package.json](./projects/plain-live-docs/package.json).
--   Create a PR
--   When the PR is merged, an action will run and publish the packages to npm.
-    -   By creating a version that ends with `next`, for example `"version" : "1.2.3-next""`, the npm version will be tagged
-        with `@next`
-    -   Versions that don't end with `next` will be published without a tag, which means it will be considered `@latest`.
+We recommend that a separate PR be created when publishing a new version of the library. To publish a new version
+of `@vmw/plain-js-live-docs` or `@vmw/ng-live-docs`, you must add the following anywhere in your commit message:
+
+-   `[publish @vmw/plain-js-live-docs]` to publish @vmw/plain-js-live-docs@next
+-   `[publish @vmw/ng-live-docs]` to publish @vmw/ng-live-docs@next
+-   `[publish @vmw/plain-js-live-docs@latest]` to publish @vmw/plain-js-live-docs@latest
+-   `[publish @vmw/ng-live-docs@latest]` to publish @vmw/ng-live-docs@latest
+
+And modify the corresponding package.json files:
+
+-   [projects/ng-live-docs/package.json](./projects/ng-live-docs/package.json)
+-   [projects/plain-js-live-docs/package.json](./projects/plain-live-docs/package.json).
+
+Note that `@latest` releases are only to be created when we release a version of VCD. Most releases, except for the
+final release that is used by a release of VCD, should be `@next`
 
 ## To run dev server with simple examples
 
@@ -60,4 +68,4 @@ a theme to be used.
 
 # How to use it
 
-For Angular based libraries, please look at 'How to use it' it section of [a relative link](./projects/ng-live-docs/README.md)
+For Angular based libraries, please look at 'How to use it' it section of [NG LiveDocs](./projects/ng-live-docs/README.md)
