@@ -86,7 +86,6 @@
             "main": "projects/example-ng-app/src/main.ts",
             "polyfills": "projects/example-ng-app/src/polyfills.ts",
             "tsConfig": "projects/example-ng-app/tsconfig.app.json",
-            "aot": true,
             "assets": [
               "projects/example-ng-app/src/favicon.ico",
               "projects/example-ng-app/src/assets"
@@ -100,7 +99,13 @@
               "node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js",
               "node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js",
               "node_modules/@clr/icons/clr-icons.min.js"
-            ]
+            ],
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -110,7 +115,6 @@
                   "with": "projects/example-ng-app/src/environments/environment.prod.ts"
                 }
               ],
-              "optimization": false,
               "outputHashing": "all",
               "sourceMap": false,
               "namedChunks": false,
@@ -130,7 +134,8 @@
                 }
               ]
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
