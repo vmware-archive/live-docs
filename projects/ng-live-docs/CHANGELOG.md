@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [0.0.14]
+
+### Fixed
+
+Make @vmw/ng-live-docs/index.js work on Windows
+
 ## [0.0.13]
 
 The first good version after problems with the pipeline. Version to be used for  
