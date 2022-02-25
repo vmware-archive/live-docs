@@ -1,11 +1,13 @@
 {
   "name": "@vmw/plain-js-live-docs",
   "version": "0.0.5",
+  "dependencies": {
+    "lit-html": "2.2.0"
+  },
   "peerDependencies": {
-    "@clr/ui": "^5",
-    "@clr/icons": "^5",
-    "@cds/core": "^5",
-    "lit-html": "^1",
+    "@clr/ui": "^12",
+    "@clr/icons": "^12",
+    "@cds/core": "^5.6.1",
     "prismjs": "^1"
   }
 }

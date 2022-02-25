@@ -3,5 +3,6 @@
   "dest": "../../dist/plain-js-live-docs",
   "lib": {
     "entryFile": "src/public-api.ts"
-  }
+  },
+  "allowedNonPeerDependencies": ["lit-html"]
 }
