@@ -2,12 +2,12 @@
   "name": "@vmw/ng-live-docs",
   "version": "0.0.13",
   "peerDependencies": {
-    "@angular/common": "~11",
-    "@angular/core": "~11",
-    "@angular/platform-browser": "^11",
-    "@clr/ui": "^5",
-    "@clr/icons": "^5",
-    "@clr/angular": "^5",
+    "@angular/common": "~12",
+    "@angular/core": "~12",
+    "@angular/platform-browser": "^12",
+    "@clr/ui": "^12",
+    "@clr/icons": "^12",
+    "@clr/angular": "^12",
     "@cds/core": "^5"
   },
   "dependencies": {

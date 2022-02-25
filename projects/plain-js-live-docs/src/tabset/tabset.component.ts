@@ -117,7 +117,7 @@ export class Tabset extends JsComponent {
         this.el.removeEventListener('click', this.onClick);
     }
 
-    onClick = (e: MouseEvent) => {
+    onClick = (e: Event) => {
         const button = this.findClosestParent(e.target as HTMLElement, 'li.nav-item button');
         if (!button) {
             return;
