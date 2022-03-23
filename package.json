@@ -40,7 +40,7 @@
     "@webcomponents/webcomponentsjs": "2.0.0",
     "angular-cli-ghpages": "0.6.2",
     "cross-spawn": "^7.0.3",
-    "prismjs": "1.23.0",
+    "prismjs": "1.27.0",
     "rbradford-compodoc": "1.1.11",
     "rxjs": "6.5.5",
     "schematics-utilities": "2.0.2",
