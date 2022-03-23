@@ -4,17 +4,12 @@ Enables Angular based UI component libraries to embed editable code snippets win
 
 See https://vmware.github.io/vmware-cloud-director-ui-components/dataExporter for an example
 
-This is a monorepo with three projects:
+This is an ng cli monorepo with two projects:
 
 ## [NG Live docs](./projects/ng-live-docs/README.md)
 
 This is the project that is used from Angular applications, `@vmw/live-docs`. This is what is used directly by
 [VCD's Common UI Components package](https://vmware.github.io/vmware-cloud-director-ui-components)
-
-## Plain JS Live Docs
-
-The intent of this was so that plain JS applications could also use this package but has not fully been developed. It
-currently contains a tabbed panel that is built with plain JS.
 
 ## Example application
 
@@ -46,17 +41,12 @@ of a WidgetObject pattern to minimize duplication of code accessing HTML in test
 ## Publishing
 
 We recommend that a separate PR be created when publishing a new version of the library. To publish a new version
-of `@vmw/plain-js-live-docs` or `@vmw/ng-live-docs`, you must add the following anywhere in your commit message:
+of `@vmw/ng-live-docs`, you must add the following anywhere in your commit message:
 
--   `[publish @vmw/plain-js-live-docs]` to publish @vmw/plain-js-live-docs@next
 -   `[publish @vmw/ng-live-docs]` to publish @vmw/ng-live-docs@next
--   `[publish @vmw/plain-js-live-docs@latest]` to publish @vmw/plain-js-live-docs@latest
 -   `[publish @vmw/ng-live-docs@latest]` to publish @vmw/ng-live-docs@latest
 
-And modify the corresponding package.json files:
-
--   [projects/ng-live-docs/package.json](./projects/ng-live-docs/package.json)
--   [projects/plain-js-live-docs/package.json](./projects/plain-live-docs/package.json).
+And modify [projects/ng-live-docs/package.json](./projects/ng-live-docs/package.json)
 
 Note that `@latest` releases are only to be created when we release a version of VCD. Most releases, except for the
 final release that is used by a release of VCD, should be `@next`

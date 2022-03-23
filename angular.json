@@ -3,38 +3,6 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "plain-js-live-docs": {
-      "projectType": "library",
-      "root": "projects/plain-js-live-docs",
-      "sourceRoot": "projects/plain-js-live-docs/src",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
-          "options": {
-            "tsConfig": "projects/plain-js-live-docs/tsconfig.lib.json",
-            "project": "projects/plain-js-live-docs/ng-package.json"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/plain-js-live-docs/src/test.ts",
-            "tsConfig": "projects/plain-js-live-docs/tsconfig.spec.json",
-            "karmaConfig": "projects/plain-js-live-docs/karma.conf.js"
-          }
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "lintFilePatterns": [
-              "projects/plain-js-live-docs/**/*.ts",
-              "projects/plain-js-live-docs/**/*.html"
-            ]
-          }
-        }
-      }
-    },
     "ng-live-docs": {
       "projectType": "library",
       "root": "projects/ng-live-docs",
