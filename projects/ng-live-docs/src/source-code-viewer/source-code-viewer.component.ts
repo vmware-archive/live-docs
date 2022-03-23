@@ -1,59 +1,53 @@
 /*!
- * Copyright 2020 VMware, Inc.
+ * Copyright 2019 VMware, Inc.
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-import { Component, ElementRef, Input, OnDestroy, Type } from '@angular/core';
-import { TabbedCodeViewer } from '@vmw/plain-js-live-docs';
+import { Component, Input, Type } from '@angular/core';
 import Prism from 'prismjs';
+import { DocumentationRetrieverService } from '../documentation-retriever.service';
 import 'prismjs/components/prism-scss';
 import 'prismjs/components/prism-typescript';
-import { DocumentationRetrieverService } from '../documentation-retriever.service';
 
 /**
  * To display the 3 code parts(TypeScript, HTML and CSS) of a component
  */
 @Component({
     selector: 'vmw-source-code-viewer',
-    template: '',
+    templateUrl: './source-code-viewer.component.html',
+    styleUrls: ['./source-code-viewer.component.scss'],
 })
-export class SourceCodeViewerComponent implements OnDestroy {
-    constructor(private documentationRetriever: DocumentationRetrieverService, private el: ElementRef) {}
+export class SourceCodeViewerComponent {
+    /**
+     * Different source codes of the component
+     */
+    typescriptSourceCode: string;
+    htmlSourceCode: string;
+    cssSourceCode: string;
 
-    private tabbedCodeViewer: TabbedCodeViewer;
+    constructor(private documentationRetriever: DocumentationRetrieverService) {}
 
     /**
-     * The component whose typescript, html, css will be displayed
+     * The component which source (typescript, html, css) will be displayed
      */
     @Input()
-    set component(component: Type<unknown>) {
+    set component(component: Type<any>) {
         if (!component) {
             return;
         }
+        const tsSource = this.documentationRetriever.getTypescriptSourceCode(component);
+        if (tsSource) {
+            this.typescriptSourceCode = Prism.highlight(tsSource, Prism.languages.typescript);
+        }
 
-        this.tabbedCodeViewer = new TabbedCodeViewer(
-            [
-                {
-                    language: 'HTML',
-                    sourceCode: this.documentationRetriever.getHtmlSourceCode(component),
-                    languageId: Prism.languages.html,
-                },
-                {
-                    language: 'TypeScript',
-                    sourceCode: this.documentationRetriever.getTypescriptSourceCode(component),
-                    languageId: Prism.languages.typescript,
-                },
-                {
-                    language: 'SCSS',
-                    sourceCode: this.documentationRetriever.getCssSourceCode(component),
-                    languageId: Prism.languages.scss,
-                },
-            ].filter(code => code.sourceCode)
-        );
-        this.tabbedCodeViewer.render(this.el.nativeElement);
-    }
+        const htmlSource = this.documentationRetriever.getHtmlSourceCode(component);
+        if (htmlSource) {
+            this.htmlSourceCode = Prism.highlight(htmlSource, Prism.languages.html);
+        }
 
-    ngOnDestroy(): void {
-        this.tabbedCodeViewer.destroy();
+        const cssSource = this.documentationRetriever.getCssSourceCode(component);
+        if (cssSource) {
+            this.cssSourceCode = Prism.highlight(cssSource, Prism.languages.scss);
+        }
     }
 }

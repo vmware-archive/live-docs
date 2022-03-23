@@ -37,32 +37,10 @@ jobs:
 
             - run: npm run lint
 
-    build-plain-js-live-docs:
-        runs-on: ubuntu-latest
-        name: Build /plain-js-live-docs
-        needs: [npm-ci]
-        steps:
-            - uses: actions/checkout@v2
-
-            - name: Cache node_modules
-              uses: actions/cache@v1
-              with:
-                  path: ./node_modules
-                  key: npm-${{ github.sha }}
-
-            - name: Store plain-js-live-docs output
-              uses: actions/cache@v1
-              with:
-                  path: ./dist/plain-js-live-docs
-                  key: ${{github.sha}}-plain-js-live-docs
-
-            - run: |
-                  npm run build:plainjs
-
     build-ng-live-docs:
         runs-on: ubuntu-latest
         name: Build /ng-live-docs
-        needs: [npm-ci, build-plain-js-live-docs]
+        needs: [npm-ci]
         steps:
             - uses: actions/checkout@v2
 
@@ -71,12 +49,6 @@ jobs:
               with:
                   path: ./node_modules
                   key: npm-${{ github.sha }}
-
-            - name: Read plain-js-live-docs output
-              uses: actions/cache@v1
-              with:
-                  path: ./dist/plain-js-live-docs
-                  key: ${{github.sha}}-plain-js-live-docs
 
             - name: Store ng-live-docs output
               uses: actions/cache@v1
@@ -90,7 +62,7 @@ jobs:
     build-example-ng-app:
         runs-on: ubuntu-latest
         name: Build /example-ng-app
-        needs: [npm-ci, build-plain-js-live-docs, build-ng-live-docs]
+        needs: [npm-ci, build-ng-live-docs]
         steps:
             - uses: actions/checkout@v2
 
@@ -126,7 +98,7 @@ jobs:
     unit-testing:
         runs-on: ubuntu-latest
         name: Unit tests
-        needs: [npm-ci, build-plain-js-live-docs]
+        needs: [npm-ci]
         steps:
             - uses: actions/checkout@v2
 
@@ -135,12 +107,6 @@ jobs:
               with:
                   path: ./node_modules
                   key: npm-${{ github.sha }}
-
-            - name: Read plain-js-live-docs cache
-              uses: actions/cache@v1
-              with:
-                  path: ./dist/plain-js-live-docs
-                  key: ${{github.sha}}-plain-js-live-docs
 
             - name: Run unit-tests
               run: npm run test:ci:ng-live-docs
@@ -148,50 +114,6 @@ jobs:
             - name: Upload coverage to Codecov
               if: success()
               uses: codecov/codecov-action@v1
-
-    publish-plain-js-live-docs:
-        if: contains(github.event.head_commit.message, '[publish @vmw/plain-js-live-docs')
-            && github.event_name == 'push'
-            && github.ref == 'refs/heads/master'
-        needs: [build-plain-js-live-docs]
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
-
-            # Default registry is github's internal npm registry
-            - name: Setup Node registry
-              uses: actions/setup-node@v1
-              with:
-                  node-version: '13'
-                  registry-url: https://registry.npmjs.org/
-
-            - name: Read npm_modules cache
-              uses: actions/cache@v1
-              with:
-                  path: ./node_modules
-                  key: npm-${{ github.sha }}
-
-            - name: Read plain-js-live-docs cache
-              uses: actions/cache@v1
-              with:
-                  path: ./dist/plain-js-live-docs
-                  key: ${{github.sha}}-plain-js-live-docs
-
-            - name: Publish plain-js-live-docs@next
-              if: contains(github.event.head_commit.message, '[publish @vmw/plain-js-live-docs]')
-              run: |
-                  cd ./dist/plain-js-live-docs
-                  npm publish --tag next --access public
-              env:
-                  NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-
-            - name: Publish plain-js-live-docs@latest
-              if: contains(github.event.head_commit.message, '[publish @vmw/plain-js-live-docs@latest]')
-              run: |
-                  cd ./dist/plain-js-live-docs
-                  npm publish
-              env:
-                  NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
     publish-ng-live-docs:
         if: contains(github.event.head_commit.message, '[publish @vmw/ng-live-docs')
