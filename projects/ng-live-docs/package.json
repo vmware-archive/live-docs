@@ -1,6 +1,6 @@
 {
   "name": "@vmw/ng-live-docs",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "peerDependencies": {
     "@angular/common": "~12",
     "@angular/core": "~12",
