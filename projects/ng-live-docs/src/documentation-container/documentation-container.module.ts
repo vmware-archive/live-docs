@@ -19,13 +19,12 @@ const declarations = [
     DocumentationContainerComponent,
     DocumentationContainerDocumentationComponent,
     DocumentationContainerApiComponent,
-    DocumentationContainerExampleComponent
+    DocumentationContainerExampleComponent,
 ];
 
 @NgModule({
     imports: [ClarityModule, CommonModule, OverviewViewerModule, ApiViewerModule, ExampleViewerModule, RouterModule],
     declarations: [...declarations],
-    entryComponents: [DocumentationContainerComponent],
     exports: [...declarations, OverviewViewerModule, ApiViewerModule, ExampleViewerModule],
 })
 export class DocumentationContainerModule {}

@@ -9,9 +9,8 @@ import { ApiViewerModule } from '@vmw/ng-live-docs';
 import { ApiViewerExampleComponent } from './api-viewer.example.component';
 
 @NgModule({
-  declarations: [ApiViewerExampleComponent],
-  imports: [CommonModule, ApiViewerModule],
-  exports: [ApiViewerExampleComponent],
-  entryComponents: [ApiViewerExampleComponent],
+    declarations: [ApiViewerExampleComponent],
+    imports: [CommonModule, ApiViewerModule],
+    exports: [ApiViewerExampleComponent],
 })
 export class ApiViewerExampleModule {}
