@@ -3,27 +3,13 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-import { Inject, InjectionToken } from '@angular/core';
+import { Inject } from '@angular/core';
 import sdk from '@stackblitz/sdk';
 import { OpenOptions, Project } from '@stackblitz/sdk/typings/interfaces';
 import { CompodocComponent, CompodocModule } from './compodoc/compodoc-schema';
-import { ExampleEntry } from './documentation';
 import { DocumentationRetrieverService } from './documentation-retriever.service';
-
-export interface StackBlitzInfo {
-    /** Something like 'vcd-ui-cc-starter-clarity-v8-yhe4yg', then ID of a StackBlitz URL */
-    templateId: string;
-    /** The name of the project displaying examples */
-    projectName: string;
-
-    /**
-     * Finds a module for a component
-     * If this is null or an empty string is returned, the module is not added to the example
-     */
-    moduleFinder?(componentName: string): string;
-}
-
-export const STACKBLITZ_INFO = new InjectionToken<StackBlitzInfo>('StackBlitz Template information');
+import { STACKBLITZ_INFO } from './injection-tokens';
+import { ExampleEntry, StackBlitzInfo } from './interfaces';
 
 const APP_MODULE = 'src/app/app.module.ts';
 const APP_COMPONENT_HTML = 'src/app/app.component.html';

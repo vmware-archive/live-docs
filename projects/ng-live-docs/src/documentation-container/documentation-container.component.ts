@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-import {Component} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {DocumentationEntry} from '../documentation';
+import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { DocumentationEntry } from '../interfaces';
 
 @Component({
     selector: 'vmw-documentation-container',
-    templateUrl: './documentation-container.component.html'
+    templateUrl: './documentation-container.component.html',
 })
 export class DocumentationContainerComponent {
     /**
